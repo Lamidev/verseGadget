@@ -43,7 +43,7 @@ const Footer = () => {
               className="object-contain filter brightness-110 contrast-110"
             />
             <p className="text-sm text-gray-600 leading-relaxed">
-              Welcome to GADGETS GRID Phone and accessories, your go-to place
+              Welcome to GADGETS GRID Phone and accessories, your African one stop shop
               for the latest and greatest in tech.
             </p>
           </div>
