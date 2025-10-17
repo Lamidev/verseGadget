@@ -492,7 +492,7 @@ function ShoppingHeader() {
               className="h-10 w-10 rounded-md"
             />
             <span className="text-xl font-extrabold text-gray-900 tracking-tight">
-              Gadget<span className="text-primary">Grid</span>
+              Gadgets<span className="text-primary">Grid</span>
             </span>
           </Link>
         </div>
