@@ -426,6 +426,8 @@ function HeaderRightContent({ closeSheet }) {
 
 function ShoppingHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [openCartSheet, setOpenCartSheet] = useState(false); // Add this state
+  const { cartItems } = useSelector((state) => state.shopCart); // Add this selector
   const navigate = useNavigate();
 
   return (
@@ -502,9 +504,27 @@ function ShoppingHeader() {
           <Button variant="outline" size="icon" onClick={() => navigate("/shop/search")}>
             <Search className="h-5 w-5" />
           </Button>
-          <Button variant="outline" size="icon" onClick={() => navigate("/shop/cart")}>
-            <ShoppingCart className="h-5 w-5" />
-          </Button>
+          
+          {/* Fix: Use Sheet for mobile cart instead of navigation */}
+          <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
+            <Button
+              onClick={() => setOpenCartSheet(true)}
+              variant="outline"
+              size="icon"
+              className="relative"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {cartItems?.items?.length > 0 && (
+                <span className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-white text-xs font-bold">
+                  {cartItems.items.length}
+                </span>
+              )}
+            </Button>
+            <UserCartWrapper
+              setOpenCartSheet={setOpenCartSheet}
+              cartItems={cartItems?.items?.length > 0 ? cartItems.items : []}
+            />
+          </Sheet>
         </div>
 
         {/* Desktop Menu Center */}
