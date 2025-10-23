@@ -1,10 +1,40 @@
+// const mongoose = require("mongoose");
+
+// const CartSchema = new mongoose.Schema(
+//   {
+//     userId: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "User",
+//       required: true,
+//     },
+//     items: [
+//       {
+//         productId: {
+//           type: mongoose.Schema.Types.ObjectId,
+//           ref: "Product",
+//           required: true,
+//         },
+//         quantity: {
+//           type: Number,
+//           required: true,
+//           min: 1,
+//         },
+//       },
+//     ],
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
+
+// module.exports = mongoose.model("Cart", CartSchema);
+
 const mongoose = require("mongoose");
 
 const CartSchema = new mongoose.Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true,
     },
     items: [
@@ -21,6 +51,10 @@ const CartSchema = new mongoose.Schema(
         },
       },
     ],
+    isGuest: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

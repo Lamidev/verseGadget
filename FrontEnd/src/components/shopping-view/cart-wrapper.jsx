@@ -89,7 +89,7 @@ import { useSelector } from "react-redux";
 
 function UserCartWrapper({ cartItems, setOpenCartSheet }) {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const totalCartAmount =
     cartItems && cartItems.length > 0
@@ -105,6 +105,17 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
       : 0;
 
   const totalItems = cartItems?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      // Store current state to redirect back after login
+      sessionStorage.setItem('redirectAfterLogin', '/shop/checkout');
+      navigate("/auth/login");
+    } else {
+      navigate("/shop/checkout");
+    }
+    setOpenCartSheet(false);
+  };
 
   return (
     <SheetContent className="sm:max-w-lg flex flex-col p-4 sm:p-6">
@@ -190,14 +201,11 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
           
           <div className="space-y-2">
             <Button
-              onClick={() => {
-                navigate("/shop/checkout");
-                setOpenCartSheet(false);
-              }}
+              onClick={handleCheckout}
               className="w-full py-2 sm:py-3 text-sm sm:text-base font-semibold"
               size="lg"
             >
-              Proceed to Checkout
+              {isAuthenticated ? "Proceed to Checkout" : "Login to Checkout"}
             </Button>
             <Button
               onClick={() => {
@@ -210,6 +218,11 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
               Continue Shopping
             </Button>
           </div>
+          {!isAuthenticated && (
+            <div className="text-xs text-center text-blue-600 px-2">
+              Your cart will be saved and merged when you login
+            </div>
+          )}
         </div>
       )}
     </SheetContent>

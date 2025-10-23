@@ -125,6 +125,7 @@
 // }
 
 // export default UserCartItemsContent;
+
 import { Minus, Plus, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -132,6 +133,7 @@ import { deleteCartItem, updateCartQuantity } from "@/store/shop/cart-slice";
 import { useToast } from "../ui/use-toast";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { getOrCreateSessionId } from "@/components/utils/session";
 
 function UserCartItemsContent({ cartItem }) {
   const { user } = useSelector((state) => state.auth);
@@ -142,8 +144,10 @@ function UserCartItemsContent({ cartItem }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   function handleUpdateQuantity(getCartItem, typeOfAction) {
+    const sessionId = getOrCreateSessionId();
+    
     if (typeOfAction === "plus") {
-      const currentItem = cartItems.items.find(
+      const currentItem = cartItems.find(
         (item) => item.productId === getCartItem?.productId
       );
       const product = productList.find(
@@ -164,7 +168,6 @@ function UserCartItemsContent({ cartItem }) {
 
     dispatch(
       updateCartQuantity({
-        userId: user?.id,
         productId: getCartItem?.productId,
         quantity:
           typeOfAction === "plus"
@@ -184,7 +187,7 @@ function UserCartItemsContent({ cartItem }) {
   function handleCartItemDelete(getCartItem) {
     setIsDeleting(true);
     dispatch(
-      deleteCartItem({ userId: user?.id, productId: getCartItem?.productId })
+      deleteCartItem({ productId: getCartItem?.productId })
     ).then((data) => {
       if (data?.payload?.success) {
         toast({
