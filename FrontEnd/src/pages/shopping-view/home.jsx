@@ -1,6 +1,5 @@
 
 
-
 // import { motion } from "framer-motion";
 // import { Button } from "@/components/ui/button";
 // import {
@@ -13,7 +12,6 @@
 //   Laptop,
 //   LaptopMinimal,
 //   ShoppingBag,
-//   ShoppingBasketIcon,
 //   Smartphone,
 //   Tablet,
 //   TabletSmartphone,
@@ -58,17 +56,20 @@
 //   {
 //     icon: FaTruck,
 //     title: "Swift & Secure Delivery",
-//     description: "Our fast delivery policy applies to all orders, regardless of the order value or destination.",
+//     description:
+//       "Our fast delivery policy applies to all orders, regardless of the order value or destination.",
 //   },
 //   {
 //     icon: FaCreditCard,
 //     title: "Secure & Seamless Payment",
-//     description: "Your payment is always safe, secure, and protected at all times.",
+//     description:
+//       "Your payment is always safe, secure, and protected at all times.",
 //   },
 //   {
 //     icon: FaHeadset,
 //     title: "24/7 Support",
-//     description: "We are available 24/7 to assist you with any question, or issues you may have.",
+//     description:
+//       "We are available 24/7 to assist you with any question, or issues you may have.",
 //   },
 // ];
 
@@ -86,15 +87,14 @@
 //   const [featuredIndex, setFeaturedIndex] = useState(0);
 //   const [featuredProducts, setFeaturedProducts] = useState([]);
 
-//   // Responsive breakpoints
 //   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 //   const isMobile = windowWidth < 640;
 //   const isTablet = windowWidth >= 640 && windowWidth < 1024;
 
 //   useEffect(() => {
 //     const handleResize = () => setWindowWidth(window.innerWidth);
-//     window.addEventListener('resize', handleResize);
-//     return () => window.removeEventListener('resize', handleResize);
+//     window.addEventListener("resize", handleResize);
+//     return () => window.removeEventListener("resize", handleResize);
 //   }, []);
 
 //   const shuffleArray = (array) => {
@@ -105,18 +105,18 @@
 //     return array;
 //   };
 
-//   useEffect(() => {
-//     shuffleFeaturedProducts();
-//     const interval = setInterval(shuffleFeaturedProducts, 60 * 60 * 1000);
-//     return () => clearInterval(interval);
-//   }, [productList]);
-
 //   const shuffleFeaturedProducts = () => {
 //     if (productList.length > 0) {
 //       const shuffledProducts = shuffleArray([...productList]).slice(0, 8);
 //       setFeaturedProducts(shuffledProducts);
 //     }
 //   };
+
+//   useEffect(() => {
+//     shuffleFeaturedProducts();
+//     const interval = setInterval(shuffleFeaturedProducts, 60 * 60 * 1000);
+//     return () => clearInterval(interval);
+//   }, [productList]);
 
 //   function handleNavigateToListingPage(getCurrentItem, section) {
 //     sessionStorage.removeItem("filters");
@@ -234,7 +234,8 @@
 //           onClick={() =>
 //             setCurrentSlide(
 //               (prevSlide) =>
-//                 (prevSlide - 1 + featureImageList.length) % featureImageList.length
+//                 (prevSlide - 1 + featureImageList.length) %
+//                 featureImageList.length
 //             )
 //           }
 //           className="absolute top-1/2 left-2 sm:left-4 transform -translate-y-1/2 bg-white/80"
@@ -253,19 +254,20 @@
 //         </Button>
 //       </div>
 
-//       {/* Trending Products */}
-//       <section className="py-8 sm:py-12 px-4 sm:px-6">
+//       {/* Top Products */}
+//       <section className="py-6 sm:py-10 px-4 sm:px-6">
 //         <div className="max-w-7xl mx-auto">
-//           <h2 className="text-xl sm:text-2xl font-bold justify-start mb-6 sm:mb-8">Top Products</h2>
-//           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+//           <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-7">
+//             Top Products
+//           </h2>
+//           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
 //             {displayedProducts.map((productItem, index) => (
 //               <motion.div
 //                 key={productItem.id}
-//                 initial={{ opacity: 0, x: -50 }}
+//                 initial={{ opacity: 0, x: -40 }}
 //                 animate={{ opacity: 1, x: 0 }}
-//                 transition={{ duration: 0.5, delay: index * 0.1 }}
+//                 transition={{ duration: 0.4, delay: index * 0.08 }}
 //                 whileHover={{ scale: 1.03 }}
-//                 className="cursor-pointer"
 //               >
 //                 <ShoppingProductTile
 //                   handleGetProductDetails={handleGetProductDetails}
@@ -278,75 +280,71 @@
 //         </div>
 //       </section>
 
-//       <section className="py-8 sm:py-12 bg-gray-50 px-4 sm:px-6">
-//   <div className="max-w-7xl mx-auto">
-//     <div className="flex justify-start mb-6 sm:mb-8">
-//       <h2 className="text-xl sm:text-2xl font-bold">Shop by category</h2>
-//     </div>
-//     <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 xs:gap-3 sm:gap-4">
-//       {categoriesWithIcon.map(({ id, label, icon: Icon }) => (
-//         <motion.div
-//           key={id}
-//           whileHover={{ scale: 1.05 }}
-//           transition={{ duration: 0.2 }}
-//         >
-//           <Card
-//             onClick={() => handleNavigateToListingPage({ id }, "category")}
-//             className="cursor-pointer hover:shadow-md h-full"
-//           >
-//             <CardContent className="flex flex-col items-center justify-center p-2 sm:p-3">
-//               <Icon className="w-5 h-5 sm:w-6 sm:h-6 mb-1 text-peach-500" />
-//               <span className="text-[10px] xs:text-xs sm:text-sm font-medium text-center leading-tight">
-//                 {label}
-//               </span>
-//             </CardContent>
-//           </Card>
-//         </motion.div>
-//       ))}
-//     </div>
-//   </div>
-// </section>
+//       {/* Categories */}
+//       <section className="py-6 sm:py-10 bg-gray-50 px-4 sm:px-6">
+//         <div className="max-w-7xl mx-auto">
+//           <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-7">
+//             Shop by Category
+//           </h2>
+//           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
+//             {categoriesWithIcon.map(({ id, label, icon: Icon }) => (
+//               <motion.div key={id} whileHover={{ scale: 1.05 }}>
+//                 <Card
+//                   onClick={() => handleNavigateToListingPage({ id }, "category")}
+//                   className="cursor-pointer hover:shadow-md h-full"
+//                 >
+//                   <CardContent className="flex flex-col items-center justify-center p-2 sm:p-3">
+//                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 mb-1 text-peach-500" />
+//                     <span className="text-[10px] xs:text-xs sm:text-sm font-medium text-center leading-tight">
+//                       {label}
+//                     </span>
+//                   </CardContent>
+//                 </Card>
+//               </motion.div>
+//             ))}
+//           </div>
+//         </div>
+//       </section>
 
-// <section className="py-8 sm:py-12 bg-gray-50 px-4 sm:px-6">
-//   <div className="max-w-7xl mx-auto">
-//     <div className="flex justify-start mb-6 sm:mb-8">
-//       <h2 className="text-xl sm:text-2xl font-bold">Shop by Brand</h2>
-//     </div>
-//     <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 xs:gap-3 sm:gap-4">
-//       {brandsWithIcon.map(({ id, label, icon: Icon }) => (
-//         <motion.div
-//           key={id}
-//           whileHover={{ scale: 1.05 }}
-//           transition={{ duration: 0.2 }}
-//         >
-//           <Card
-//             onClick={() => handleNavigateToListingPage({ id }, "brand")}
-//             className="cursor-pointer hover:shadow-md h-full"
-//           >
-//             <CardContent className="flex flex-col items-center justify-center p-2 sm:p-3">
-//               <Icon className="w-5 h-5 sm:w-6 sm:h-6 mb-1 text-peach-500" />
-//               <span className="text-[10px] xs:text-xs sm:text-sm font-medium text-center leading-tight">
-//                 {label}
-//               </span>
-//             </CardContent>
-//           </Card>
-//         </motion.div>
-//       ))}
-//     </div>
-//   </div>
-// </section>
+//       {/* Brands */}
+//       <section className="py-6 sm:py-10 bg-gray-50 px-4 sm:px-6">
+//         <div className="max-w-7xl mx-auto">
+//           <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-7">
+//             Shop by Brand
+//           </h2>
+//           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
+//             {brandsWithIcon.map(({ id, label, icon: Icon }) => (
+//               <motion.div key={id} whileHover={{ scale: 1.05 }}>
+//                 <Card
+//                   onClick={() => handleNavigateToListingPage({ id }, "brand")}
+//                   className="cursor-pointer hover:shadow-md h-full"
+//                 >
+//                   <CardContent className="flex flex-col items-center justify-center p-2 sm:p-3">
+//                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 mb-1 text-peach-500" />
+//                     <span className="text-[10px] xs:text-xs sm:text-sm font-medium text-center leading-tight">
+//                       {label}
+//                     </span>
+//                   </CardContent>
+//                 </Card>
+//               </motion.div>
+//             ))}
+//           </div>
+//         </div>
+//       </section>
 
 //       {/* Featured Products */}
-//       <section className="py-8 sm:py-12 px-4 sm:px-6">
+//       <section className="py-6 sm:py-10 px-4 sm:px-6">
 //         <div className="max-w-7xl mx-auto">
-//           <h2 className="text-xl sm:text-2xl font-bold justify-start mb-6 sm:mb-8">Featured Products</h2>
-//           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+//           <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-7">
+//             Featured Products
+//           </h2>
+//           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
 //             {featuredProducts.map((productItem, index) => (
 //               <motion.div
 //                 key={productItem.id}
-//                 initial={{ opacity: 0, x: -50 }}
+//                 initial={{ opacity: 0, x: -40 }}
 //                 animate={{ opacity: 1, x: 0 }}
-//                 transition={{ duration: 0.5, delay: index * 0.1 }}
+//                 transition={{ duration: 0.4, delay: index * 0.08 }}
 //                 whileHover={{ scale: 1.03 }}
 //               >
 //                 <ShoppingProductTile
@@ -361,37 +359,36 @@
 //       </section>
 
 //       {/* Support Features */}
-//       <section className="py-8 sm:py-12 bg-gray-50 px-4 sm:px-6">
-//         <div className="max-w-7xl mx-auto">
-//           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-//             {supportFeatures.map((feature, index) => {
-//               const Icon = feature.icon;
-//               return (
-//                 <motion.div
-//                   key={index}
-//                   className="flex justify-center"
-//                   whileHover={{ scale: 1.03 }}
-//                   initial={{ opacity: 0 }}
-//                   animate={{ opacity: 1 }}
-//                   transition={{ duration: 0.5 }}
-//                 >
-//                   <Card className="w-full">
-//                     <CardContent className="flex flex-col items-center p-4 sm:p-6">
-//                       <Icon className="w-8 h-8 sm:w-10 sm:h-10 mb-3 text-peach-500" />
-//                       <h3 className="font-bold text-base sm:text-lg mb-2 text-center">{feature.title}</h3>
-//                       <p className="text-xs sm:text-sm text-center text-gray-600">
-//                         {feature.description}
-//                       </p>
-//                     </CardContent>
-//                   </Card>
-//                 </motion.div>
-//               );
-//             })}
-//           </div>
+//       <section className="py-6 sm:py-10 bg-gray-50 px-4 sm:px-6">
+//         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+//           {supportFeatures.map((feature, index) => {
+//             const Icon = feature.icon;
+//             return (
+//               <motion.div
+//                 key={index}
+//                 whileHover={{ scale: 1.03 }}
+//                 initial={{ opacity: 0 }}
+//                 animate={{ opacity: 1 }}
+//                 transition={{ duration: 0.5 }}
+//               >
+//                 <Card className="w-full">
+//                   <CardContent className="flex flex-col items-center p-4 sm:p-6">
+//                     <Icon className="w-8 h-8 sm:w-10 sm:h-10 mb-3 text-peach-500" />
+//                     <h3 className="font-bold text-base sm:text-lg mb-2 text-center">
+//                       {feature.title}
+//                     </h3>
+//                     <p className="text-xs sm:text-sm text-center text-gray-600">
+//                       {feature.description}
+//                     </p>
+//                   </CardContent>
+//                 </Card>
+//               </motion.div>
+//             );
+//           })}
 //         </div>
 //       </section>
 
-//       <CustomerReviews/>
+//       <CustomerReviews />
 
 //       <ProductDetailsDialog
 //         open={openDetailsDialog}
@@ -437,6 +434,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { getFeatureImages } from "@/store/common-slice";
 import { FaTruck, FaCreditCard, FaHeadset } from "react-icons/fa";
 import CustomerReviews from "@/components/shopping-view/customer-reviews";
+import { getOrCreateSessionId } from "@/components/utils/session";
 
 const categoriesWithIcon = [
   { id: "smartphones", label: "Smartphones", icon: Smartphone },
@@ -484,6 +482,7 @@ function ShoppingHome() {
   );
   const { featureImageList } = useSelector((state) => state.commonFeature);
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -533,31 +532,95 @@ function ShoppingHome() {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  function handleAddToCart(getCurrentProductId) {
-    if (!user) {
-      navigate("/auth/login");
+  async function handleAddToCart(getCurrentProductId, getTotalStock) {
+  try {
+    const userId = user?.id;
+    const sessionId = userId ? null : getOrCreateSessionId();
+
+    if (!userId && !sessionId) {
       toast({
-        title: "Please login to add to cart.",
+        title: "Session information missing",
+        description: "Please log in or enable cookies.",
         variant: "destructive",
       });
       return;
     }
 
-    dispatch(
+    const currentCartItems = Array.isArray(cartItems) ? cartItems : [];
+    const existingItem = currentCartItems.find(
+      (item) => item.productId === getCurrentProductId
+    );
+
+    if (existingItem && existingItem.quantity >= getTotalStock) {
+      toast({
+        title: `Stock Limit`,
+        description: `Only ${getTotalStock} units available in stock.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!existingItem && 1 > getTotalStock) {
+      toast({
+        title: `Limited Stock`,
+        description: `Only ${getTotalStock} quantity available for this product.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (existingItem && existingItem.quantity + 1 > getTotalStock) {
+      toast({
+        title: `Stock Exceeded`,
+        description: `Adding one more would exceed available stock of ${getTotalStock}.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log('Dispatching addToCart for product:', getCurrentProductId);
+    
+    const response = await dispatch(
       addToCart({
-        userId: user?.id,
         productId: getCurrentProductId,
         quantity: 1,
       })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?.id));
-        toast({ title: "Product added to cart!" });
-      } else if (data?.payload?.message) {
-        toast({ title: data?.payload?.message });
-      }
+    ).unwrap();
+
+    console.log('Add to cart response in component:', response);
+
+    if (response.success) {
+      await dispatch(fetchCartItems()).unwrap();
+      toast({
+        title: "Product added to cart!",
+        description: "Item successfully added to your shopping cart.",
+      });
+    } else {
+      toast({
+        title: response.message || "Failed to add product to cart",
+        variant: "destructive",
+      });
+    }
+  } catch (error) {
+    console.error("Add to cart error:", error);
+    toast({
+      title: "Failed to add product to cart",
+      description: error.message || "Please try again later.",
+      variant: "destructive",
     });
   }
+}
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        await dispatch(fetchCartItems()).unwrap();
+      } catch (error) {
+        console.error("Failed to fetch cart:", error);
+      }
+    };
+    fetchCart();
+  }, [dispatch]);
 
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
@@ -601,7 +664,6 @@ function ShoppingHome() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Slider */}
       <div className="relative w-full h-[200px] xs:h-[250px] sm:h-[350px] md:h-[450px] lg:h-[550px] xl:h-[600px] overflow-hidden">
         {featureImageList?.map((slide, index) => (
           <motion.div
@@ -658,7 +720,6 @@ function ShoppingHome() {
         </Button>
       </div>
 
-      {/* Top Products */}
       <section className="py-6 sm:py-10 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-7">
@@ -684,7 +745,6 @@ function ShoppingHome() {
         </div>
       </section>
 
-      {/* Categories */}
       <section className="py-6 sm:py-10 bg-gray-50 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-7">
@@ -710,7 +770,6 @@ function ShoppingHome() {
         </div>
       </section>
 
-      {/* Brands */}
       <section className="py-6 sm:py-10 bg-gray-50 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-7">
@@ -736,7 +795,6 @@ function ShoppingHome() {
         </div>
       </section>
 
-      {/* Featured Products */}
       <section className="py-6 sm:py-10 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-7">
@@ -762,7 +820,6 @@ function ShoppingHome() {
         </div>
       </section>
 
-      {/* Support Features */}
       <section className="py-6 sm:py-10 bg-gray-50 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           {supportFeatures.map((feature, index) => {
