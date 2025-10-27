@@ -21,7 +21,7 @@ const VERIFICATION_EMAIL_TEMPLATE = `
     <p>Enter this code on the verification page to complete your registration.</p>
     <p>This code will expire in 15 minutes.</p>
     <p>If you didn't create an account, please ignore this email.</p>
-    <p>Best regards,<br>Your App Team</p>
+    <p>Best regards,<br>Gadgetsgrid Admin</p>
   </div>
 </body>
 </html>
@@ -55,7 +55,7 @@ const PASSWORD_RESET_SUCCESS_TEMPLATE = `
         <li>Avoid reusing passwords</li>
       </ul>
     </p>
-    <p>Best regards,<br>Your App Team</p>
+    <p>Best regards,<br>Gadgetsgrid Admin</p>
   </div>
 </body>
 </html>
@@ -81,7 +81,7 @@ const PASSWORD_RESET_REQUEST_TEMPLATE = `
       <a href="{resetURL}" style="background-color: ${THEME_COLOR}; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Reset Password</a>
     </div>
     <p>This link will expire in 1 hour.</p>
-    <p>Best regards,<br>Your App Team</p>
+    <p>Best regards,<br>Gadgetsgrid Admin</p>
   </div>
 </body>
 </html>
@@ -120,7 +120,7 @@ const ORDER_RECEIPT_TEMPLATE = `
       <p>If you have any questions about your delivery, feel free to contact our support team at <strong>gadgetsgridphones@gmail.com</strong>.</p>
     </div>
 
-    <p>Best regards,<br>Gadgetsgridphonesandaccessories</p>
+    <p>Best regards,<br>Gadgetsgrid Admin</p>
   </div>
 </body>
 </html>

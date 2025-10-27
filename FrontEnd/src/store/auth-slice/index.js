@@ -1,3 +1,5 @@
+
+
 // import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // import axios from "axios";
 // axios.defaults.withCredentials = true;
@@ -42,8 +44,8 @@
 //       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, formData);
       
 //       if (response.data.token) {
-//         sessionStorage.setItem("token", response.data.token); // Store token
-//         dispatch(setUser(response.data.user)); // Set user
+//         sessionStorage.setItem("token", response.data.token);
+//         dispatch(setUser(response.data.user));
 //       }
 
 //       return response.data;
@@ -72,14 +74,11 @@
 //       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/forgot-password`, { email });
 //       return response.data;
 //     } catch (error) {
-//       console.log("Error response:", error.response?.data); // Debug log - error response
+//       console.log("Error response:", error.response?.data);
 //       return rejectWithValue(error.response?.data?.message || "Error sending reset email");
 //     }
 //   }
 // );
-
-
-
 
 // export const resetPassword = createAsyncThunk(
 //   "auth/reset-password",
@@ -115,7 +114,6 @@
 //   }
 // );
 
-
 // const authSlice = createSlice({
 //   name: "auth",
 //   initialState,
@@ -123,6 +121,12 @@
 //     setUser: (state, action) => {
 //       state.user = action.payload;
 //       state.isAuthenticated = true;
+//     },
+//     clearError: (state) => {
+//       state.error = null;
+//     },
+//     clearMessage: (state) => {
+//       state.message = null;
 //     },
 //   },
 //   extraReducers: (builder) => {
@@ -146,9 +150,8 @@
 //       })
 //       .addCase(verifyEmail.fulfilled, (state, action) => {
 //         state.isLoading = false;
-//         state.user = { ...state.user, isVerified: true }; // Ensure user is marked as verified
+//         state.user = { ...state.user, isVerified: true };
 //       })
-      
 //       .addCase(verifyEmail.rejected, (state, action) => {
 //         state.isLoading = false;
 //         state.error = action.payload;
@@ -163,7 +166,6 @@
 //         state.isAuthenticated = true;
 //         sessionStorage.setItem("token", action.payload.token);
 //       })
-      
 //       .addCase(loginUser.rejected, (state, action) => {
 //         state.isLoading = false;
 //         state.error = action.payload;
@@ -177,7 +179,6 @@
 //         state.isAuthenticated = false;
 //         state.user = null;
 //         sessionStorage.removeItem("token"); 
-        
 //       })
 //       .addCase(logoutUser.rejected, (state, action) => {
 //         state.isLoading = false;
@@ -186,19 +187,15 @@
 //       .addCase(forgotPassword.pending, (state) => {
 //         state.isLoading = true;
 //         state.error = null;
-      
 //       })
 //       .addCase(forgotPassword.fulfilled, (state, action) => {
 //         state.isLoading = false;
 //         state.message = action.payload.message; 
-        
 //       })
 //       .addCase(forgotPassword.rejected, (state, action) => {
 //         state.isLoading = false;
 //         state.error = action.payload;
-      
 //       })
-      
 //       .addCase(resetPassword.pending, (state) => {
 //         state.isLoading = true;
 //       })
@@ -225,8 +222,9 @@
 //   },
 // });
 
-// export const { setUser } = authSlice.actions;
+// export const { setUser, clearError, clearMessage } = authSlice.actions;
 // export default authSlice.reducer;
+
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
@@ -248,7 +246,12 @@ export const registerUser = createAsyncThunk(
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, formData);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Error registering user");
+      return rejectWithValue(
+        error.response?.data?.message || 
+        error.response?.data?.error || 
+        error.message || 
+        "Error registering user"
+      );
     }
   }
 );
