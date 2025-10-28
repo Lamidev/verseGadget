@@ -1,5 +1,6 @@
 
 
+
 // import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // import axios from "axios";
 // axios.defaults.withCredentials = true;
@@ -20,7 +21,12 @@
 //       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, formData);
 //       return response.data;
 //     } catch (error) {
-//       return rejectWithValue(error.response?.data?.message || "Error registering user");
+//       return rejectWithValue(
+//         error.response?.data?.message || 
+//         error.response?.data?.error || 
+//         error.message || 
+//         "Error registering user"
+//       );
 //     }
 //   }
 // );
@@ -288,11 +294,18 @@ export const loginUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   "auth/logout",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, dispatch }) => {
     try {
+      // Clear local state first
+      dispatch(clearAuthState());
+      
+      // Then make the API call
       await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`);
+      
       return {};
     } catch (error) {
+      // Even if API call fails, clear local state
+      dispatch(clearAuthState());
       return rejectWithValue("Error logging out");
     }
   }
@@ -340,6 +353,8 @@ export const checkAuth = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error("Check Auth Error:", error);
+      // Clear invalid token
+      sessionStorage.removeItem("token");
       return rejectWithValue(error.message || "Failed to check auth");
     }
   }
@@ -358,6 +373,24 @@ const authSlice = createSlice({
     },
     clearMessage: (state) => {
       state.message = null;
+    },
+    clearAuthState: (state) => {
+      // Reset to initial state
+      state.isAuthenticated = false;
+      state.user = null;
+      state.isLoading = false;
+      state.error = null;
+      state.message = null;
+      // Clear token from sessionStorage
+      sessionStorage.removeItem("token");
+    },
+    directLogout: (state) => {
+      state.isAuthenticated = false;
+      state.user = null;
+      state.isLoading = false;
+      state.error = null;
+      state.message = null;
+      sessionStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {
@@ -407,13 +440,12 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;
-        state.isAuthenticated = false;
-        state.user = null;
-        sessionStorage.removeItem("token"); 
+        // State is already cleared by the clearAuthState action
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+        // State is already cleared by the clearAuthState action
       })
       .addCase(forgotPassword.pending, (state) => {
         state.isLoading = true;
@@ -453,5 +485,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, clearError, clearMessage } = authSlice.actions;
+export const { setUser, clearError, clearMessage, clearAuthState, directLogout } = authSlice.actions;
 export default authSlice.reducer;

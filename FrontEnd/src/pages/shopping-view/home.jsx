@@ -448,7 +448,7 @@ const categoriesWithIcon = [
 const brandsWithIcon = [
   { id: "apple", label: "Apple", icon: Apple },
   { id: "samsung", label: "Samsung", icon: Airplay },
-  { id: "sony", label: "Sony", icon: Camera },
+  { id: "google-pixel", label: "Google pixel", icon: Camera },
   { id: "dell", label: "Dell", icon: LaptopMinimal },
   { id: "hp", label: "HP", icon: TabletSmartphone },
   { id: "lenovo", label: "Lenovo", icon: Tv },
@@ -577,8 +577,6 @@ function ShoppingHome() {
       });
       return;
     }
-
-    console.log('Dispatching addToCart for product:', getCurrentProductId);
     
     const response = await dispatch(
       addToCart({
@@ -586,8 +584,6 @@ function ShoppingHome() {
         quantity: 1,
       })
     ).unwrap();
-
-    console.log('Add to cart response in component:', response);
 
     if (response.success) {
       await dispatch(fetchCartItems()).unwrap();
@@ -661,6 +657,16 @@ function ShoppingHome() {
     productList.length > 4
       ? [...productList, ...productList].slice(featuredIndex, featuredIndex + 4)
       : productList;
+
+      useEffect(() => {
+  // Always load all products when home page mounts
+  dispatch(
+    fetchAllFilteredProducts({
+      filterParams: {},
+      sortParams: "price-lowtohigh",
+    })
+  );
+}, [dispatch]);
 
   return (
     <div className="flex flex-col min-h-screen">
