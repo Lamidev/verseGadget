@@ -486,7 +486,7 @@ function ShoppingListing() {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(8);
+  const [productsPerPage] = useState(12);
   const [isLoading, setIsLoading] = useState(false);
 
   function handleSort(value) {

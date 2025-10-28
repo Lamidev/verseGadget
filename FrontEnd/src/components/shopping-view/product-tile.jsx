@@ -1,399 +1,119 @@
 
-// import { motion } from "framer-motion";
-// import { brandOptionsMap, categoryOptionsMap } from "@/config";
-// import { Badge } from "../ui/badge";
-// import { Button } from "../ui/button";
-// import { Card, CardContent, CardFooter } from "../ui/card";
-
-
-// function ShoppingProductTile({ product, handleGetProductDetails, handleAddToCart }) {
-//   const discountPercentage =
-//     product?.salePrice > 0
-//       ? Math.round(((product?.price - product?.salePrice) / product?.price) * 100)
-//       : 0;
-
-//   return (
-//     <Card className="w-full hover:bg-gray-300 hover:shadow-lg transition duration-300 ease-in-out">
-//       <div
-//         onClick={() => handleGetProductDetails(product?._id)}
-//         className="relative cursor-pointer overflow-hidden"
-//       >
-//         <div className="relative">
-//           <img
-//             src={product?.image}
-//             alt={product?.title}
-//             className="w-full h-32 sm:h-48 md:h-56 object-contain rounded-t-lg"
-//           />
-
-//           {/* Badges Container */}
-//           <div className="absolute top-2 left-2 flex flex-col space-y-1">
-//             {/* Out of Stock & Sale Badges */}
-//             {product?.totalStock === 0 ? (
-//               <motion.div
-//                 initial={{ x: -50, opacity: 0 }}
-//                 animate={{ x: 0, opacity: 1 }}
-//                 transition={{ duration: 0.5 }}
-//               >
-//                 <Badge className="text-[10px] px-1.5 py-0.5 bg-red-500 hover:bg-red-600">Out Of Stock</Badge>
-//               </motion.div>
-//             ) : product?.totalStock < 10 ? (
-//               <motion.div
-//                 initial={{ x: -50, opacity: 0 }}
-//                 animate={{ x: 0, opacity: 1 }}
-//                 transition={{ duration: 0.5 }}
-//               >
-//                 <Badge className="text-[10px] px-1.5 py-0.5 bg-red-500 hover:bg-red-600">
-//                   {`Only ${product?.totalStock} left`}
-//                 </Badge>
-//               </motion.div>
-//             ) : product?.salePrice > 0 ? (
-//               <motion.div
-//                 initial={{ x: -50, opacity: 0 }}
-//                 animate={{ x: 0, opacity: 1 }}
-//                 transition={{ duration: 0.5 }}
-//               >
-//                 <Badge className="text-[10px] px-1.5 py-0.5 bg-red-500 hover:bg-red-600">Sale</Badge>
-//               </motion.div>
-//             ) : null}
-//           </div>
-
-//           {/* Product Condition and Discount Badges */}
-//           {product?.condition && (
-//             <motion.div
-//               initial={{ y: -50, opacity: 0 }}
-//               animate={{ y: 0, opacity: 1 }}
-//               whileHover={{ scale: 1.1 }}
-//               transition={{ duration: 0.5, delay: 0.2 }}
-//               className="absolute top-2 right-2 flex flex-col space-y-1"
-//             >
-//               <Badge
-//                 className={`text-[10px] px-1.5 py-0.5 ${
-//                   product?.condition === "Brand New"
-//                     ? "bg-green-500 hover:bg-green-600"
-//                     : "bg-yellow-500 hover:bg-yellow-600"
-//                 }`}
-//               >
-//                 {product?.condition}
-//               </Badge>
-
-//               {/* Discount Badge */}
-//               {product?.salePrice > 0 && (
-//                 <Badge className="text-[10px] px-1.5 py-0.5 bg-blue-500 hover:bg-blue-600">
-//                   {discountPercentage}% Off
-//                 </Badge>
-//               )}
-//             </motion.div>
-//           )}
-//         </div>
-
-//         <CardContent className="p-2 sm:p-4">
-//           <h2 className="text-xs sm:text-sm font-bold mb-1 sm:mb-2">{product?.title}</h2>
-//           <div className="flex justify-between items-center mb-1 sm:mb-2">
-//             <span className="text-xs text-muted-foreground">
-//               {categoryOptionsMap[product?.category]}
-//             </span>
-//             <span className="text-xs text-muted-foreground">
-//               {brandOptionsMap[product?.brand]}
-//             </span>
-//           </div>
-//           <div className="flex justify-between items-center mb-1 sm:mb-2">
-//             <span
-//               className={`${
-//                 product?.salePrice > 0 ? "line-through" : ""
-//               } text-xs sm:text-sm font-semibold text-primary`}
-//             >
-//               ₦{product?.price}
-//             </span>
-//             {product?.salePrice > 0 ? (
-//               <span className="text-xs sm:text-sm font-semibold text-primary">
-//                 ₦{product?.salePrice}
-//               </span>
-//             ) : null}
-//           </div>
-//         </CardContent>
-//       </div>
-
-//       <CardFooter className="p-2 sm:p-4">
-//         {product?.totalStock === 0 ? (
-//           <Button className="w-full text-xs opacity-60 cursor-not-allowed">
-//             Out Of Stock
-//           </Button>
-//         ) : (
-//           <Button
-//             onClick={() => handleAddToCart(product?._id, product?.totalStock)}
-//             className="w-full text-xs sm:text-sm"
-//           >
-//             Add to cart
-//           </Button>
-//         )}
-//       </CardFooter>
-//     </Card>
-//   );
-// }
-
-// export default ShoppingProductTile;
-
-// import { motion } from "framer-motion";
-// import { brandOptionsMap, categoryOptionsMap } from "@/config";
-// import { Badge } from "../ui/badge";
-// import { Button } from "../ui/button";
-// import { Card, CardContent, CardFooter } from "../ui/card";
-
-// function ShoppingProductTile({ product, handleGetProductDetails, handleAddToCart }) {
-//   const discountPercentage =
-//     product?.salePrice > 0
-//       ? Math.round(((product?.price - product?.salePrice) / product?.price) * 100)
-//       : 0;
-
-//   return (
-//     <Card className="w-full hover:bg-gray-50 hover:shadow-lg transition duration-300 ease-in-out">
-//       <div
-//         onClick={() => handleGetProductDetails(product?._id)}
-//         className="relative cursor-pointer overflow-hidden"
-//       >
-//         <div className="relative">
-//           <img
-//             src={product?.image}
-//             alt={product?.title}
-//             className="w-full h-32 sm:h-48 md:h-56 object-contain rounded-t-lg"
-//           />
-
-//           {/* Badges Container */}
-//           <div className="absolute top-2 left-2 flex flex-col space-y-1">
-//             {/* Out of Stock & Sale Badges */}
-//             {product?.totalStock === 0 ? (
-//               <motion.div
-//                 initial={{ x: -50, opacity: 0 }}
-//                 animate={{ x: 0, opacity: 1 }}
-//                 transition={{ duration: 0.5 }}
-//               >
-//                 <Badge className="text-[10px] px-1.5 py-0.5 bg-red-500 hover:bg-red-600">Out Of Stock</Badge>
-//               </motion.div>
-//             ) : product?.totalStock < 10 ? (
-//               <motion.div
-//                 initial={{ x: -50, opacity: 0 }}
-//                 animate={{ x: 0, opacity: 1 }}
-//                 transition={{ duration: 0.5 }}
-//               >
-//                 <Badge className="text-[10px] px-1.5 py-0.5 bg-red-500 hover:bg-red-600">
-//                   {`Only ${product?.totalStock} left`}
-//                 </Badge>
-//               </motion.div>
-//             ) : product?.salePrice > 0 ? (
-//               <motion.div
-//                 initial={{ x: -50, opacity: 0 }}
-//                 animate={{ x: 0, opacity: 1 }}
-//                 transition={{ duration: 0.5 }}
-//               >
-//                 <Badge className="text-[10px] px-1.5 py-0.5 bg-red-500 hover:bg-red-600">Sale</Badge>
-//               </motion.div>
-//             ) : null}
-//           </div>
-
-//           {/* Product Condition and Discount Badges */}
-//           {product?.condition && (
-//             <motion.div
-//               initial={{ y: -50, opacity: 0 }}
-//               animate={{ y: 0, opacity: 1 }}
-//               whileHover={{ scale: 1.1 }}
-//               transition={{ duration: 0.5, delay: 0.2 }}
-//               className="absolute top-2 right-2 flex flex-col space-y-1"
-//             >
-//               <Badge
-//                 className={`text-[10px] px-1.5 py-0.5 ${
-//                   product?.condition === "Brand New"
-//                     ? "bg-green-500 hover:bg-green-600"
-//                     : "bg-yellow-500 hover:bg-yellow-600"
-//                 }`}
-//               >
-//                 {product?.condition}
-//               </Badge>
-
-//               {/* Discount Badge */}
-//               {product?.salePrice > 0 && (
-//                 <Badge className="text-[10px] px-1.5 py-0.5 bg-blue-500 hover:bg-blue-600">
-//                   {discountPercentage}% Off
-//                 </Badge>
-//               )}
-//             </motion.div>
-//           )}
-//         </div>
-
-//         <CardContent className="p-2 sm:p-4">
-//           <h2 className="text-xs sm:text-sm font-bold mb-1 sm:mb-2">{product?.title}</h2>
-//           <div className="flex justify-between items-center mb-1 sm:mb-2">
-//             <span className="text-xs text-muted-foreground">
-//               {categoryOptionsMap[product?.category]}
-//             </span>
-//             <span className="text-xs text-muted-foreground">
-//               {brandOptionsMap[product?.brand]}
-//             </span>
-//           </div>
-//           <div className="flex justify-between items-center mb-1 sm:mb-2">
-//             <span
-//               className={`${
-//                 product?.salePrice > 0 ? "line-through" : ""
-//               } text-xs sm:text-sm font-semibold text-peach-600`}
-//             >
-//               ₦{product?.price}
-//             </span>
-//             {product?.salePrice > 0 ? (
-//               <span className="text-xs sm:text-sm font-semibold text-peach-600">
-//                 ₦{product?.salePrice}
-//               </span>
-//             ) : null}
-//           </div>
-//         </CardContent>
-//       </div>
-
-//       <CardFooter className="p-2 sm:p-4">
-//         {product?.totalStock === 0 ? (
-//           <Button className="w-full text-xs opacity-60 cursor-not-allowed">
-//             Out Of Stock
-//           </Button>
-//         ) : (
-//           <Button
-//             onClick={() => handleAddToCart(product?._id, product?.totalStock)}
-//             className="w-full text-xs sm:text-sm hover:bg-peach-600"
-//           >
-//             Add to cart
-//           </Button>
-//         )}
-//       </CardFooter>
-//     </Card>
-//   );
-// }
-
-// export default ShoppingProductTile;
 
 import { motion } from "framer-motion";
-import { brandOptionsMap, categoryOptionsMap } from "@/config";
 import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardFooter } from "../ui/card";
+import { ShoppingCart } from "lucide-react";
 
 function ShoppingProductTile({ product, handleGetProductDetails, handleAddToCart }) {
   const discountPercentage =
-    product?.salePrice > 0
+    product?.salePrice > 0 && product?.price > product?.salePrice
       ? Math.round(((product?.price - product?.salePrice) / product?.price) * 100)
       : 0;
 
+  const hasValidDiscount = discountPercentage > 0;
+
   return (
-    <Card className="w-full hover:bg-gray-50 hover:shadow-lg transition duration-300 ease-in-out">
-      <div
-        onClick={() => handleGetProductDetails(product?._id)}
-        className="relative cursor-pointer overflow-hidden"
-      >
-        <div className="relative">
-          <img
-            src={product?.image}
-            alt={product?.title}
-            className="w-full h-32 sm:h-48 md:h-56 object-contain rounded-t-lg"
-          />
+    <div className="w-full group">
+      {/* Image Container */}
+      <div className="relative cursor-pointer mb-3">
+        <img
+          src={product?.image}
+          alt={product?.title}
+          className="w-full h-48 sm:h-56 md:h-64 object-contain rounded-lg"
+          onClick={() => handleGetProductDetails(product?._id)}
+        />
 
-          {/* Badges Container */}
-          <div className="absolute top-2 left-2 flex flex-col space-y-1">
-            {/* Out of Stock & Sale Badges */}
-            {product?.totalStock === 0 ? (
-              <motion.div
-                initial={{ x: -50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Badge className="text-[9px] px-1.5 py-0.5 h-5 bg-red-500 hover:bg-red-600">Out Of Stock</Badge>
-              </motion.div>
-            ) : product?.totalStock < 10 ? (
-              <motion.div
-                initial={{ x: -50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Badge className="text-[9px] px-1.5 py-0.5 h-5 bg-red-500 hover:bg-red-600">
-                  {`Only ${product?.totalStock} left`}
-                </Badge>
-              </motion.div>
-            ) : product?.salePrice > 0 ? (
-              <motion.div
-                initial={{ x: -50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Badge className="text-[9px] px-1.5 py-0.5 h-5 bg-red-500 hover:bg-red-600">Sale</Badge>
-              </motion.div>
-            ) : null}
-          </div>
-
-          {/* Product Condition and Discount Badges */}
-          {product?.condition && (
-            <motion.div
-              initial={{ y: -50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="absolute top-2 right-2 flex flex-col space-y-1"
-            >
-              <Badge
-                className={`text-[9px] px-1.5 py-0.5 h-5 ${
-                  product?.condition === "Brand New"
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-yellow-500 hover:bg-yellow-600"
-                }`}
-              >
-                {product?.condition}
+        {/* Badges - Top Left */}
+        <div className="absolute top-2 left-2 flex flex-col space-y-1">
+          {product?.totalStock === 0 ? (
+            <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.4 }}>
+              <Badge className="text-[9px] bg-red-500 hover:bg-red-600 px-1.5 py-0.5 h-5">
+                Out Of Stock
               </Badge>
-
-              {/* Discount Badge - Made more compact */}
-              {product?.salePrice > 0 && (
-                <Badge className="text-[9px] px-[6px] py-0 h-5 bg-blue-500 hover:bg-blue-600 flex items-center justify-center">
-                  {discountPercentage}%
-                </Badge>
-              )}
             </motion.div>
-          )}
+          ) : product?.totalStock < 10 ? (
+            <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.4 }}>
+              <Badge className="text-[9px] bg-red-500 hover:bg-red-600 px-1.5 py-0.5 h-5">{`Only ${product?.totalStock} left`}</Badge>
+            </motion.div>
+          ) : null}
         </div>
 
-        <CardContent className="p-2 sm:p-4">
-          <h2 className="text-xs sm:text-sm font-bold mb-1 sm:mb-2">{product?.title}</h2>
-          <div className="flex justify-between items-center mb-1 sm:mb-2">
-            <span className="text-xs text-muted-foreground">
-              {categoryOptionsMap[product?.category]}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {brandOptionsMap[product?.brand]}
-            </span>
-          </div>
-          <div className="flex justify-between items-center mb-1 sm:mb-2">
-            <span
-              className={`${
-                product?.salePrice > 0 ? "line-through" : ""
-              } text-xs sm:text-sm font-semibold text-peach-500`}
+        {/* Condition + Discount - Top Right */}
+        {product?.condition && (
+          <motion.div
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className="absolute top-2 right-2 flex flex-col space-y-1"
+          >
+            <Badge
+              className={`text-[9px] px-1.5 py-0.5 h-5 ${
+                product?.condition === "Brand New"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-yellow-500 hover:bg-yellow-600"
+              }`}
             >
-              ₦{product?.price}
-            </span>
-            {product?.salePrice > 0 ? (
-              <span className="text-xs sm:text-sm font-semibold text-peach-600">
-                ₦{product?.salePrice}
-              </span>
-            ) : null}
-          </div>
-        </CardContent>
+              {product?.condition}
+            </Badge>
+
+            {/* Only show discount badge if there's a valid discount */}
+            {hasValidDiscount && (
+              <Badge className="text-[10px] px-1.5 py-0 h-5 bg-blue-500 hover:bg-blue-600 flex items-center justify-center min-w-[0]">
+                {discountPercentage}%
+              </Badge>
+            )}
+          </motion.div>
+        )}
+
+        {/* Cart Icon - static on mobile, hover on desktop */}
+        {product?.totalStock > 0 && (
+          <motion.button
+            onClick={() => handleAddToCart(product?._id, product?.totalStock)}
+            className="
+              absolute bottom-3 left-1/2 -translate-x-1/2
+              bg-peach-500 text-white rounded-full shadow-lg
+              transition duration-300 ease-in-out
+              p-1.5 md:p-2
+              md:opacity-0 md:group-hover:opacity-100
+            "
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ShoppingCart className="h-4 w-4" />
+          </motion.button>
+        )}
       </div>
 
-      <CardFooter className="p-2 sm:p-4">
-        {product?.totalStock === 0 ? (
-          <Button className="w-full text-xs opacity-60 cursor-not-allowed">
-            Out Of Stock
-          </Button>
-        ) : (
-          <Button
-            onClick={() => handleAddToCart(product?._id, product?.totalStock)}
-            className="w-full text-xs sm:text-sm hover:bg-peach-600"
-          >
-            Add to cart
-          </Button>
-        )}
-      </CardFooter>
-    </Card>
+      {/* Product details */}
+      <div className="space-y-2">
+        {/* Title */}
+        <h2
+          onClick={() => handleGetProductDetails(product?._id)}
+          className="text-xs sm:text-sm font-bold line-clamp-2 cursor-pointer hover:text-peach-600 transition-colors"
+        >
+          {product?.title}
+        </h2>
+
+        {/* Pricing */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 gap-1">
+          {product?.salePrice > 0 && hasValidDiscount ? (
+            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+              <span className="text-[11px] sm:text-xs text-gray-500 line-through">
+                ₦{product?.price?.toLocaleString("en-NG")}
+              </span>
+
+              <span className="text-sm sm:text-base font-semibold text-peach-600">
+                ₦{product?.salePrice?.toLocaleString("en-NG")}
+              </span>
+            </div>
+          ) : (
+            <span className="text-sm sm:text-base font-semibold text-peach-600">
+              ₦{product?.price?.toLocaleString("en-NG")}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

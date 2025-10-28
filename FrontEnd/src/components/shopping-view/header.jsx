@@ -86,10 +86,10 @@
 //   }
 
 //   useEffect(() => {
-//     if (user?.Id && cartItems.length > 0) {
-//       dispatch(fetchCartItems(user?.Id));
+//     if (user?.Id) {
+//       dispatch(fetchCartItems());
 //     }
-//   }, [dispatch]);
+//   }, [dispatch, user?.Id]);
 
 //   return (
 //     <div className="flex items-center gap-4">
@@ -113,15 +113,15 @@
 //           className="relative"
 //         >
 //           <ShoppingCart className="w-6 h-6" />
-//           {cartItems?.items?.length > 0 && (
+//           {cartItems?.length > 0 && (
 //             <span className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-white text-xs font-bold">
-//               {cartItems.items.length}
+//               {cartItems.length}
 //             </span>
 //           )}
 //         </Button>
 //         <UserCartWrapper
 //           setOpenCartSheet={setOpenCartSheet}
-//           cartItems={cartItems?.items?.length > 0 ? cartItems.items : []}
+//           cartItems={cartItems?.length > 0 ? cartItems : []}
 //         />
 //       </Sheet>
 
@@ -164,7 +164,6 @@
 //         </DropdownMenuContent>
 //       </DropdownMenu>
 
-//       {/* Logout Dialog */}
 //       <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
 //         <DialogContent>
 //           <DialogHeader>
@@ -187,16 +186,14 @@
 
 // function ShoppingHeader() {
 //   const [isSheetOpen, setIsSheetOpen] = useState(false);
-//   const [openCartSheet, setOpenCartSheet] = useState(false); // Add this state
-//   const { cartItems } = useSelector((state) => state.shopCart); // Add this selector
+//   const [openCartSheet, setOpenCartSheet] = useState(false);
+//   const { cartItems } = useSelector((state) => state.shopCart);
 //   const navigate = useNavigate();
 
 //   return (
 //     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 shadow-md">
 //       <div className="flex h-16 items-center justify-between px-4 md:px-6">
-//         {/* Left Section — Hamburger + Brand */}
 //         <div className="flex items-center gap-3">
-//           {/* Hamburger before logo */}
 //           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
 //             <SheetTrigger asChild>
 //               <Button variant="outline" size="icon" className="lg:hidden">
@@ -204,10 +201,8 @@
 //               </Button>
 //             </SheetTrigger>
 
-//             {/* Mobile Menu Content */}
 //             <SheetContent side="left" className="flex flex-col h-full justify-between p-6">
 //               <div className="flex flex-col gap-6">
-//                 {/* ✅ Logo at the top inside mobile sheet */}
 //                 <div className="flex items-center gap-2 mb-4">
 //                   <img
 //                     src={GadgetgridLogo}
@@ -219,11 +214,9 @@
 //                   </span>
 //                 </div>
 
-//                 {/* Menu Items */}
 //                 <MenuItems closeSheet={() => setIsSheetOpen(false)} />
 //               </div>
 
-//               {/* Bottom Login/Register */}
 //               <div className="flex flex-col gap-3 mt-6">
 //                 <Button
 //                   variant="default"
@@ -247,7 +240,6 @@
 //             </SheetContent>
 //           </Sheet>
 
-//           {/* Logo & Brand */}
 //           <Link to="/shop/home" className="flex items-center gap-2">
 //             <img
 //               src={GadgetgridLogo}
@@ -260,13 +252,11 @@
 //           </Link>
 //         </div>
 
-//         {/* Mobile Right Icons */}
 //         <div className="flex items-center gap-2 lg:hidden">
 //           <Button variant="outline" size="icon" onClick={() => navigate("/shop/search")}>
 //             <Search className="h-5 w-5" />
 //           </Button>
           
-//           {/* Fix: Use Sheet for mobile cart instead of navigation */}
 //           <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
 //             <Button
 //               onClick={() => setOpenCartSheet(true)}
@@ -275,25 +265,23 @@
 //               className="relative"
 //             >
 //               <ShoppingCart className="h-5 w-5" />
-//               {cartItems?.items?.length > 0 && (
+//               {cartItems?.length > 0 && (
 //                 <span className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-white text-xs font-bold">
-//                   {cartItems.items.length}
+//                   {cartItems.length}
 //                 </span>
 //               )}
 //             </Button>
 //             <UserCartWrapper
 //               setOpenCartSheet={setOpenCartSheet}
-//               cartItems={cartItems?.items?.length > 0 ? cartItems.items : []}
+//               cartItems={cartItems?.length > 0 ? cartItems : []}
 //             />
 //           </Sheet>
 //         </div>
 
-//         {/* Desktop Menu Center */}
 //         <div className="hidden lg:flex flex-1 justify-center">
 //           <MenuItems closeSheet={() => setIsSheetOpen(false)} />
 //         </div>
 
-//         {/* Desktop Right Section */}
 //         <div className="hidden lg:flex items-center gap-4">
 //           <HeaderRightContent closeSheet={() => setIsSheetOpen(false)} />
 //         </div>
@@ -319,7 +307,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuContent,
 } from "../ui/dropdown-menu";
-import { logoutUser } from "@/store/auth-slice";
+import { logoutUser, directLogout } from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
@@ -384,9 +372,16 @@ function HeaderRightContent({ closeSheet }) {
   const dispatch = useDispatch();
 
   function handleLogout() {
-    dispatch(logoutUser());
+    // Use direct logout for immediate response
+    dispatch(directLogout());
     setIsLogoutDialogOpen(false);
     closeSheet();
+    navigate("/shop/home");
+    
+    // Still try the API logout but don't wait for it
+    dispatch(logoutUser()).catch(error => {
+      console.error("Background logout error:", error);
+    });
   }
 
   useEffect(() => {
