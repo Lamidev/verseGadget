@@ -70,9 +70,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Helper function to safely parse localStorage data
+const getStoredFeatureImages = () => {
+  try {
+    const stored = localStorage.getItem("featureImageList");
+    if (!stored || stored === "undefined" || stored === "null") {
+      return [];
+    }
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.error("Error parsing stored feature images:", error);
+    // Clear invalid data from localStorage
+    localStorage.removeItem("featureImageList");
+    return [];
+  }
+};
+
 const initialState = {
   isLoading: false,
-  featureImageList: JSON.parse(localStorage.getItem("featureImageList")) || [],
+  featureImageList: getStoredFeatureImages(),
 };
 
 // ✅ Fetch feature images (stale-while-revalidate)
@@ -80,7 +97,7 @@ export const getFeatureImages = createAsyncThunk(
   "/common/getFeatureImages",
   async (_, { dispatch }) => {
     // 1️⃣ Load cached images instantly (stale)
-    const cached = JSON.parse(localStorage.getItem("featureImageList"));
+    const cached = getStoredFeatureImages();
     if (cached && cached.length > 0) {
       // Dispatch cached data immediately for instant UI
       dispatch(setFeatureImages(cached));
@@ -92,8 +109,8 @@ export const getFeatureImages = createAsyncThunk(
     );
 
     // 3️⃣ Update cache only if new data is different
-    const newData = response.data.data;
-    const cachedString = JSON.stringify(cached || []);
+    const newData = response.data.data || [];
+    const cachedString = JSON.stringify(cached);
     const newString = JSON.stringify(newData);
 
     if (cachedString !== newString) {
@@ -144,6 +161,11 @@ const commonSlice = createSlice({
     setFeatureImages: (state, action) => {
       state.featureImageList = action.payload;
     },
+    // ✅ Clear feature images from localStorage and state
+    clearFeatureImages: (state) => {
+      state.featureImageList = [];
+      localStorage.removeItem("featureImageList");
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -153,7 +175,7 @@ const commonSlice = createSlice({
       })
       .addCase(getFeatureImages.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.featureImageList = action.payload.data;
+        state.featureImageList = action.payload.data || [];
       })
       .addCase(getFeatureImages.rejected, (state) => {
         state.isLoading = false;
@@ -162,11 +184,13 @@ const commonSlice = createSlice({
 
       // ✅ Add image
       .addCase(addFeatureImage.fulfilled, (state, action) => {
-        state.featureImageList.push(action.payload.data);
-        localStorage.setItem(
-          "featureImageList",
-          JSON.stringify(state.featureImageList)
-        );
+        if (action.payload.data) {
+          state.featureImageList.push(action.payload.data);
+          localStorage.setItem(
+            "featureImageList",
+            JSON.stringify(state.featureImageList)
+          );
+        }
       })
 
       // ✅ Delete image
@@ -182,5 +206,5 @@ const commonSlice = createSlice({
   },
 });
 
-export const { setFeatureImages } = commonSlice.actions;
+export const { setFeatureImages, clearFeatureImages } = commonSlice.actions;
 export default commonSlice.reducer;

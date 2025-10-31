@@ -363,35 +363,42 @@ function AdminProducts() {
     setImageFile(null);
   }
 
-  function isFormValid() {
-    const hasValidImage = currentEditedId !== null 
-      ? (formData.image || uploadedImageUrl)
-      : uploadedImageUrl;
+ function isFormValid() {
+  // For mobile, ensure all required fields are properly filled
+  const hasValidImage = currentEditedId !== null 
+    ? (formData.image || uploadedImageUrl)
+    : uploadedImageUrl;
 
-    const requiredFields = {
-      title: formData.title,
-      description: formData.description,
-      category: formData.category,
-      brand: formData.brand,
-      price: formData.price,
-      totalStock: formData.totalStock,
-      condition: formData.condition,
-    };
+  const requiredFields = {
+    title: formData.title?.trim(),
+    description: formData.description?.trim(),
+    category: formData.category?.trim(),
+    brand: formData.brand?.trim(),
+    price: formData.price?.toString().trim(),
+    totalStock: formData.totalStock?.toString().trim(),
+    condition: formData.condition?.trim(),
+  };
 
-    const allRequiredFieldsFilled = Object.values(requiredFields).every(
-      value => value !== "" && value !== null && value !== undefined
-    );
+  const allRequiredFieldsFilled = Object.values(requiredFields).every(
+    value => value && value !== "" && value !== "0"
+  );
 
-    console.log("Form validation:", {
-      hasValidImage,
-      allRequiredFieldsFilled,
-      uploadedImageUrl,
-      formDataImage: formData.image,
-      requiredFields
-    });
+  // Additional validation for numeric fields
+  const priceValid = !isNaN(parseFloat(formData.price)) && parseFloat(formData.price) > 0;
+  const stockValid = !isNaN(parseInt(formData.totalStock)) && parseInt(formData.totalStock) >= 0;
 
-    return hasValidImage && allRequiredFieldsFilled;
-  }
+  console.log("Form validation:", {
+    hasValidImage,
+    allRequiredFieldsFilled,
+    uploadedImageUrl,
+    formDataImage: formData.image,
+    requiredFields,
+    priceValid,
+    stockValid
+  });
+
+  return hasValidImage && allRequiredFieldsFilled && priceValid && stockValid;
+}
 
   function handlePageChange(page) {
     setCurrentPage(page);

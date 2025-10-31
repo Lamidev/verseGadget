@@ -195,7 +195,7 @@ function ProductImageUpload({
 
     try {
       const response = await axios.post(
-        "http://localhost:8050/api/admin/products/upload-image",
+        `${import.meta.env.VITE_API_BASE_URL}/admin/products/upload-image`,
         data
       );
       if (response?.data?.success) {
@@ -254,7 +254,7 @@ function ProductImageUpload({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex items-center gap-1 flex-1 sm:flex-none"
+                    className="flex items-center gap-1 flex-1 sm:flex-none min-h-[44px]"
                   >
                     <EyeIcon className="w-4 h-4" />
                     <span className="sm:inline">View</span>
@@ -275,7 +275,7 @@ function ProductImageUpload({
                   variant="destructive"
                   size="sm"
                   onClick={handleRemoveImage}
-                  className="flex items-center gap-1 flex-1 sm:flex-none"
+                  className="flex items-center gap-1 flex-1 sm:flex-none min-h-[44px]"
                 >
                   <XIcon className="w-4 h-4" />
                   <span className="sm:inline">Remove New</span>
@@ -285,7 +285,7 @@ function ProductImageUpload({
                   variant="destructive"
                   size="sm"
                   onClick={handleRemoveExistingImage}
-                  className="flex items-center gap-1 flex-1 sm:flex-none"
+                  className="flex items-center gap-1 flex-1 sm:flex-none min-h-[44px]"
                 >
                   <XIcon className="w-4 h-4" />
                   <span className="sm:inline">Remove</span>
@@ -362,7 +362,7 @@ function ProductImageUpload({
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:text-destructive flex-shrink-0 ml-2"
+              className="text-muted-foreground hover:text-destructive flex-shrink-0 ml-2 min-h-[44px] min-w-[44px]"
               onClick={handleRemoveImage}
             >
               <XIcon className="w-4 h-4" />
