@@ -147,7 +147,6 @@ function ProductImageUpload({
   const inputRef = useRef(null);
   const [localImageUrl, setLocalImageUrl] = useState("");
 
-  // 📸 Handle file select
   function handleImageFileChange(event) {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -157,7 +156,6 @@ function ProductImageUpload({
     }
   }
 
-  // 📦 Drag & Drop upload
   function handleDragOver(event) {
     event.preventDefault();
   }
@@ -172,7 +170,6 @@ function ProductImageUpload({
     }
   }
 
-  // ❌ Remove new image
   function handleRemoveImage() {
     setImageFile(null);
     setLocalImageUrl("");
@@ -180,14 +177,15 @@ function ProductImageUpload({
     if (inputRef.current) {
       inputRef.current.value = "";
     }
+    if (localImageUrl) {
+      URL.revokeObjectURL(localImageUrl);
+    }
   }
 
-  // ❌ Remove existing image (edit mode)
   function handleRemoveExistingImage() {
     setUploadedImageUrl("");
   }
 
-  // ☁️ Upload image to Cloudinary
   async function uploadImageToCloudinary() {
     if (!imageFile) return;
 
@@ -210,14 +208,12 @@ function ProductImageUpload({
     }
   }
 
-  // 🔁 Upload automatically when imageFile changes
   useEffect(() => {
     if (imageFile !== null) {
       uploadImageToCloudinary();
     }
   }, [imageFile]);
 
-  // 🧹 Clean up preview URL on unmount
   useEffect(() => {
     return () => {
       if (localImageUrl) {
@@ -226,7 +222,6 @@ function ProductImageUpload({
     };
   }, [localImageUrl]);
 
-  // 🧽 Reset local preview when parent resets states
   useEffect(() => {
     if (!imageFile && !uploadedImageUrl && !existingImageUrl) {
       setLocalImageUrl("");
@@ -236,7 +231,6 @@ function ProductImageUpload({
     }
   }, [imageFile, uploadedImageUrl, existingImageUrl]);
 
-  // Determine which image to display
   const displayImageUrl = localImageUrl || uploadedImageUrl || existingImageUrl;
   const hasImage = !!displayImageUrl;
   const isNewImage = localImageUrl || uploadedImageUrl;
@@ -248,26 +242,25 @@ function ProductImageUpload({
         {isEditMode ? "Product Image" : "Upload Image"}
       </Label>
 
-      {/* Preview Section */}
       {hasImage && (
         <div className="mb-4 p-4 border rounded-lg bg-gray-50">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
             <Label className="text-md font-medium">
               {isExistingImage ? "Current Image" : "Image Preview"}
             </Label>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 flex-1 sm:flex-none"
                   >
                     <EyeIcon className="w-4 h-4" />
-                    View
+                    <span className="sm:inline">View</span>
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-3xl">
+                <DialogContent className="max-w-3xl mx-4">
                   <div className="flex justify-center">
                     <img
                       src={displayImageUrl}
@@ -282,20 +275,20 @@ function ProductImageUpload({
                   variant="destructive"
                   size="sm"
                   onClick={handleRemoveImage}
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1 flex-1 sm:flex-none"
                 >
                   <XIcon className="w-4 h-4" />
-                  Remove New
+                  <span className="sm:inline">Remove New</span>
                 </Button>
               ) : (
                 <Button
                   variant="destructive"
                   size="sm"
                   onClick={handleRemoveExistingImage}
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1 flex-1 sm:flex-none"
                 >
                   <XIcon className="w-4 h-4" />
-                  Remove
+                  <span className="sm:inline">Remove</span>
                 </Button>
               )}
             </div>
@@ -304,7 +297,7 @@ function ProductImageUpload({
             <img
               src={displayImageUrl}
               alt="Preview"
-              className="h-40 w-40 object-cover rounded-lg border-2 border-gray-300"
+              className="h-32 w-32 sm:h-40 sm:w-40 object-cover rounded-lg border-2 border-gray-300"
             />
           </div>
           {isExistingImage && (
@@ -315,7 +308,6 @@ function ProductImageUpload({
         </div>
       )}
 
-      {/* Upload Section */}
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -356,10 +348,10 @@ function ProductImageUpload({
           </div>
         ) : (
           <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-            <div className="flex items-center gap-3">
-              <FileIcon className="w-8 text-primary h-8" />
-              <div>
-                <p className="text-sm font-medium truncate max-w-[200px]">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <FileIcon className="w-8 text-primary h-8 flex-shrink-0" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium truncate">
                   {imageFile.name}
                 </p>
                 <p className="text-xs text-muted-foreground">
@@ -370,7 +362,7 @@ function ProductImageUpload({
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:text-destructive"
+              className="text-muted-foreground hover:text-destructive flex-shrink-0 ml-2"
               onClick={handleRemoveImage}
             >
               <XIcon className="w-4 h-4" />
@@ -380,7 +372,6 @@ function ProductImageUpload({
         )}
       </div>
 
-      {/* Helper Text */}
       {isEditMode && hasImage && (
         <p className="text-xs text-muted-foreground text-center mt-2">
           {isExistingImage

@@ -227,7 +227,6 @@ function AdminDashboard() {
   const [imageLoadingState, setImageLoadingState] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  // State for confirming delete
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [imageToDelete, setImageToDelete] = useState(null);
 
@@ -252,7 +251,6 @@ function AdminDashboard() {
       .then((data) => {
         if (data?.payload?.success) {
           dispatch(getFeatureImages());
-          // Reset all image states after successful upload
           setImageFile(null);
           setUploadedImageUrl("");
           setImageLoadingState(false);
@@ -279,7 +277,6 @@ function AdminDashboard() {
       });
   }
 
-  // Function to handle image deletion
   function handleDeleteFeatureImage(id) {
     dispatch(deleteFeatureImage(id))
       .then((data) => {
@@ -305,13 +302,11 @@ function AdminDashboard() {
     setImageToDelete(null);
   }
 
-  // Function to show the confirmation modal
   function confirmDelete(id) {
     setImageToDelete(id);
     setShowConfirmDelete(true);
   }
 
-  // Function to reset upload form
   function handleResetUpload() {
     setImageFile(null);
     setUploadedImageUrl("");
@@ -320,7 +315,6 @@ function AdminDashboard() {
 
   return (
     <div className="p-6 space-y-8">
-      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -331,9 +325,7 @@ function AdminDashboard() {
         <p className="text-gray-600 mt-2">Manage your store and content</p>
       </motion.div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Verified Users Card */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -360,7 +352,6 @@ function AdminDashboard() {
           </Card>
         </motion.div>
 
-        {/* Total Orders Card */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -387,7 +378,6 @@ function AdminDashboard() {
           </Card>
         </motion.div>
 
-        {/* Feature Images Card */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -410,7 +400,6 @@ function AdminDashboard() {
           </Card>
         </motion.div>
 
-        {/* Growth Card */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -432,14 +421,12 @@ function AdminDashboard() {
         </motion.div>
       </div>
 
-      {/* Image Upload Section */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.5 }}
         className="grid grid-cols-1 lg:grid-cols-2 gap-8"
       >
-        {/* Upload Card */}
         <Card className="shadow-lg border-0">
           <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
             <CardTitle className="flex items-center gap-2 text-blue-700">
@@ -458,7 +445,7 @@ function AdminDashboard() {
               isCustomStyling={true}
             />
             
-            <div className="flex gap-3 mt-6">
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
               <Button 
                 onClick={handleUploadFeatureImage}
                 disabled={!uploadedImageUrl || isUploading || imageLoadingState}
@@ -479,13 +466,13 @@ function AdminDashboard() {
                   onClick={handleResetUpload}
                   variant="outline"
                   disabled={isUploading || imageLoadingState}
+                  className="flex-1 sm:flex-none"
                 >
                   Reset
                 </Button>
               )}
             </div>
 
-            {/* Upload Status */}
             {imageLoadingState && (
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-center gap-2 text-blue-700">
@@ -506,7 +493,6 @@ function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Feature Images Preview */}
         <Card className="shadow-lg border-0">
           <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50">
             <CardTitle className="flex items-center gap-2 text-green-700">
@@ -556,7 +542,6 @@ function AdminDashboard() {
         </Card>
       </motion.div>
 
-      {/* Confirmation Modal */}
       {showConfirmDelete && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
           <motion.div
