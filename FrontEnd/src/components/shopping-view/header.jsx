@@ -15,7 +15,7 @@
 //   DropdownMenuSeparator,
 //   DropdownMenuContent,
 // } from "../ui/dropdown-menu";
-// import { logoutUser } from "@/store/auth-slice";
+// import { logoutUser, directLogout } from "@/store/auth-slice";
 // import UserCartWrapper from "./cart-wrapper";
 // import { useEffect, useState } from "react";
 // import { fetchCartItems } from "@/store/shop/cart-slice";
@@ -80,9 +80,16 @@
 //   const dispatch = useDispatch();
 
 //   function handleLogout() {
-//     dispatch(logoutUser());
+//     // Use direct logout for immediate response
+//     dispatch(directLogout());
 //     setIsLogoutDialogOpen(false);
 //     closeSheet();
+//     navigate("/shop/home");
+    
+//     // Still try the API logout but don't wait for it
+//     dispatch(logoutUser()).catch(error => {
+//       console.error("Background logout error:", error);
+//     });
 //   }
 
 //   useEffect(() => {
@@ -292,6 +299,7 @@
 
 // export default ShoppingHeader;
 
+
 import { LogOut, Menu, ShoppingCart, User, Search } from "lucide-react";
 import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
@@ -483,6 +491,126 @@ function HeaderRightContent({ closeSheet }) {
   );
 }
 
+function MobileSheetContent({ closeSheet }) {
+  const { user } = useSelector((state) => state.auth);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  function handleLogout() {
+    // Use direct logout for immediate response
+    dispatch(directLogout());
+    setIsLogoutDialogOpen(false);
+    closeSheet();
+    navigate("/shop/home");
+    
+    // Still try the API logout but don't wait for it
+    dispatch(logoutUser()).catch(error => {
+      console.error("Background logout error:", error);
+    });
+  }
+
+  return (
+    <SheetContent side="left" className="flex flex-col h-full justify-between p-6">
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center gap-2 mb-4">
+          <img
+            src={GadgetgridLogo}
+            alt="GadgetGrid Logo"
+            className="h-10 w-10 rounded-md"
+          />
+          <span className="text-xl font-extrabold text-gray-900 tracking-tight">
+            Gadget<span className="text-primary">Grid</span>
+          </span>
+        </div>
+
+        <MenuItems closeSheet={closeSheet} />
+      </div>
+
+      {/* Mobile Sheet Footer - Conditionally render based on authentication */}
+      <div className="flex flex-col gap-3 mt-6">
+        {user?.userName ? (
+          // User is logged in - Show Account and Logout
+          <>
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg mb-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-primary text-white text-sm">
+                  {user?.userName[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">Welcome back</p>
+                <p className="text-xs text-gray-600">{user.userName}</p>
+              </div>
+            </div>
+            
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigate("/shop/account");
+                closeSheet();
+              }}
+              className="justify-start"
+            >
+              <User className="mr-2 h-4 w-4" />
+              My Account
+            </Button>
+            
+            <Button
+              variant="destructive"
+              onClick={() => setIsLogoutDialogOpen(true)}
+              className="justify-start"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+          </>
+        ) : (
+          // User is not logged in - Show Login and Register
+          <>
+            <Button
+              variant="default"
+              onClick={() => {
+                navigate("/auth/login");
+                closeSheet();
+              }}
+            >
+              Login
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigate("/auth/register");
+                closeSheet();
+              }}
+            >
+              Register
+            </Button>
+          </>
+        )}
+      </div>
+
+      {/* Logout Confirmation Dialog for Mobile */}
+      <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Logout</DialogTitle>
+          </DialogHeader>
+          <p>Are you sure you want to log out?</p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsLogoutDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleLogout}>
+              Logout
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </SheetContent>
+  );
+}
+
 function ShoppingHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [openCartSheet, setOpenCartSheet] = useState(false);
@@ -500,43 +628,7 @@ function ShoppingHeader() {
               </Button>
             </SheetTrigger>
 
-            <SheetContent side="left" className="flex flex-col h-full justify-between p-6">
-              <div className="flex flex-col gap-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <img
-                    src={GadgetgridLogo}
-                    alt="GadgetGrid Logo"
-                    className="h-10 w-10 rounded-md"
-                  />
-                  <span className="text-xl font-extrabold text-gray-900 tracking-tight">
-                    Gadget<span className="text-primary">Grid</span>
-                  </span>
-                </div>
-
-                <MenuItems closeSheet={() => setIsSheetOpen(false)} />
-              </div>
-
-              <div className="flex flex-col gap-3 mt-6">
-                <Button
-                  variant="default"
-                  onClick={() => {
-                    navigate("/auth/login");
-                    setIsSheetOpen(false);
-                  }}
-                >
-                  Login
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    navigate("/auth/register");
-                    setIsSheetOpen(false);
-                  }}
-                >
-                  Register
-                </Button>
-              </div>
-            </SheetContent>
+            <MobileSheetContent closeSheet={() => setIsSheetOpen(false)} />
           </Sheet>
 
           <Link to="/shop/home" className="flex items-center gap-2">

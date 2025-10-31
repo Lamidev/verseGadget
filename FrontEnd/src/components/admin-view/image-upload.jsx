@@ -131,11 +131,7 @@ import { useRef, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
 function ProductImageUpload({
   imageFile,
@@ -146,39 +142,37 @@ function ProductImageUpload({
   imageLoadingState,
   isEditMode,
   isCustomStyling = false,
-  existingImageUrl = ""
+  existingImageUrl = "",
 }) {
   const inputRef = useRef(null);
   const [localImageUrl, setLocalImageUrl] = useState("");
 
+  // 📸 Handle file select
   function handleImageFileChange(event) {
     const selectedFile = event.target.files?.[0];
-    console.log("Selected File:", selectedFile);
     if (selectedFile) {
       setImageFile(selectedFile);
-      // Create local URL for preview
       const objectUrl = URL.createObjectURL(selectedFile);
       setLocalImageUrl(objectUrl);
-      console.log("Image file state updated to:", selectedFile);
-    } else {
-      console.error("No file selected or issue with event.target.files");
     }
   }
 
+  // 📦 Drag & Drop upload
   function handleDragOver(event) {
     event.preventDefault();
   }
 
   function handleDrop(event) {
     event.preventDefault();
-    const droppedfile = event.dataTransfer.files?.[0];
-    if (droppedfile) {
-      setImageFile(droppedfile);
-      const objectUrl = URL.createObjectURL(droppedfile);
+    const droppedFile = event.dataTransfer.files?.[0];
+    if (droppedFile) {
+      setImageFile(droppedFile);
+      const objectUrl = URL.createObjectURL(droppedFile);
       setLocalImageUrl(objectUrl);
     }
   }
 
+  // ❌ Remove new image
   function handleRemoveImage() {
     setImageFile(null);
     setLocalImageUrl("");
@@ -188,22 +182,25 @@ function ProductImageUpload({
     }
   }
 
+  // ❌ Remove existing image (edit mode)
   function handleRemoveExistingImage() {
-    setUploadedImageUrl(""); // This will clear the image in edit mode
+    setUploadedImageUrl("");
   }
 
+  // ☁️ Upload image to Cloudinary
   async function uploadImageToCloudinary() {
     if (!imageFile) return;
-    
+
     setImageLoadingState(true);
     const data = new FormData();
     data.append("my_file", imageFile);
-    
+
     try {
-      const response = await axios.post("http://localhost:8050/api/admin/products/upload-image", data);
-      console.log(response, 'response');
-  
-      if (response?.data?.success) { 
+      const response = await axios.post(
+        "http://localhost:8050/api/admin/products/upload-image",
+        data
+      );
+      if (response?.data?.success) {
         setUploadedImageUrl(response.data.result.url);
       }
     } catch (error) {
@@ -213,13 +210,14 @@ function ProductImageUpload({
     }
   }
 
+  // 🔁 Upload automatically when imageFile changes
   useEffect(() => {
     if (imageFile !== null) {
       uploadImageToCloudinary();
     }
   }, [imageFile]);
 
-  // Clean up object URL on unmount
+  // 🧹 Clean up preview URL on unmount
   useEffect(() => {
     return () => {
       if (localImageUrl) {
@@ -228,7 +226,17 @@ function ProductImageUpload({
     };
   }, [localImageUrl]);
 
-  // Determine which image to display - single source of truth
+  // 🧽 Reset local preview when parent resets states
+  useEffect(() => {
+    if (!imageFile && !uploadedImageUrl && !existingImageUrl) {
+      setLocalImageUrl("");
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+    }
+  }, [imageFile, uploadedImageUrl, existingImageUrl]);
+
+  // Determine which image to display
   const displayImageUrl = localImageUrl || uploadedImageUrl || existingImageUrl;
   const hasImage = !!displayImageUrl;
   const isNewImage = localImageUrl || uploadedImageUrl;
@@ -239,8 +247,8 @@ function ProductImageUpload({
       <Label className="text-lg font-semibold mb-2 block">
         {isEditMode ? "Product Image" : "Upload Image"}
       </Label>
-      
-      {/* Single Image Preview Section - Always show when there's an image */}
+
+      {/* Preview Section */}
       {hasImage && (
         <div className="mb-4 p-4 border rounded-lg bg-gray-50">
           <div className="flex items-center justify-between mb-2">
@@ -250,25 +258,29 @@ function ProductImageUpload({
             <div className="flex gap-2">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="flex items-center gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1"
+                  >
                     <EyeIcon className="w-4 h-4" />
                     View
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-3xl">
                   <div className="flex justify-center">
-                    <img 
-                      src={displayImageUrl} 
-                      alt="Preview" 
+                    <img
+                      src={displayImageUrl}
+                      alt="Preview"
                       className="max-w-full max-h-[70vh] object-contain rounded-lg"
                     />
                   </div>
                 </DialogContent>
               </Dialog>
               {isNewImage ? (
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
+                <Button
+                  variant="destructive"
+                  size="sm"
                   onClick={handleRemoveImage}
                   className="flex items-center gap-1"
                 >
@@ -276,9 +288,9 @@ function ProductImageUpload({
                   Remove New
                 </Button>
               ) : (
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
+                <Button
+                  variant="destructive"
+                  size="sm"
                   onClick={handleRemoveExistingImage}
                   className="flex items-center gap-1"
                 >
@@ -289,9 +301,9 @@ function ProductImageUpload({
             </div>
           </div>
           <div className="flex justify-center">
-            <img 
-              src={displayImageUrl} 
-              alt="Preview" 
+            <img
+              src={displayImageUrl}
+              alt="Preview"
               className="h-40 w-40 object-cover rounded-lg border-2 border-gray-300"
             />
           </div>
@@ -303,7 +315,7 @@ function ProductImageUpload({
         </div>
       )}
 
-      {/* Single Upload Area - Always visible */}
+      {/* Upload Section */}
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -317,7 +329,7 @@ function ProductImageUpload({
           onChange={handleImageFileChange}
           accept="image/*"
         />
-        
+
         {!imageFile ? (
           <label
             htmlFor="image-upload"
@@ -325,7 +337,9 @@ function ProductImageUpload({
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span className="text-center text-sm text-muted-foreground">
-              {isEditMode && hasImage ? "Upload new image to replace current" : "Drag & drop or click to upload image"}
+              {isEditMode && hasImage
+                ? "Upload new image to replace current"
+                : "Drag & drop or click to upload image"}
             </span>
             <span className="text-xs text-muted-foreground mt-1">
               Supports: JPG, PNG, WebP
@@ -336,7 +350,9 @@ function ProductImageUpload({
             <Skeleton className="h-10 w-10 rounded-full mb-2" />
             <Skeleton className="h-4 w-32 mb-1" />
             <Skeleton className="h-3 w-24" />
-            <span className="text-xs text-muted-foreground mt-2">Uploading...</span>
+            <span className="text-xs text-muted-foreground mt-2">
+              Uploading...
+            </span>
           </div>
         ) : (
           <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
@@ -364,10 +380,10 @@ function ProductImageUpload({
         )}
       </div>
 
-      {/* Helper text for edit mode */}
+      {/* Helper Text */}
       {isEditMode && hasImage && (
         <p className="text-xs text-muted-foreground text-center mt-2">
-          {isExistingImage 
+          {isExistingImage
             ? "Upload a new image above to replace the current one, or click 'Remove' to delete the image."
             : "New image ready to replace the current one."}
         </p>
