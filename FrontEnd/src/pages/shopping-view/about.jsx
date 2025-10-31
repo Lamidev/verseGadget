@@ -11,20 +11,7 @@ import {
 } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 
-const team = [
-  {
-    name: "George Kelly",
-    role: "C.E.O",
-    img: "/team/george.jpg",
-    socials: ["instagram", "linkedin", "twitter"],
-  },
-  {
-    name: "Akinyemi Oluwatosin",
-    role: "Product Designer/ Developer",
-    img: "/team/jane.jpg",
-    socials: ["linkedin", "twitter"],
-  },
-];
+
 
 const socialIcons = {
   instagram: <FaInstagram size={20} />,
@@ -97,44 +84,6 @@ const AboutPage = () => {
         ))}
       </motion.div>
 
-      {/* Team Showcase */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16"
-      >
-        {team.map((member, index) => (
-          <motion.div
-            key={index}
-            className="bg-card rounded-2xl shadow-lg p-6 text-center overflow-hidden relative group hover:scale-105 transition-transform"
-            whileHover={{ scale: 1.05 }}
-          >
-            <img
-              src={member.img}
-              alt={member.name}
-              className="w-28 h-28 mx-auto rounded-full border-4 border-primary mb-4 object-cover"
-            />
-            <h3 className="text-xl font-bold text-primary mb-2">
-              {member.name}
-            </h3>
-            <p className="text-muted-foreground mb-4">{member.role}</p>
-            <div className="flex justify-center gap-3">
-              {member.socials.map((social, i) => (
-                <motion.a
-                  key={i}
-                  href="#"
-                  target="_blank"
-                  whileHover={{ y: -5 }}
-                  className="text-primary hover:text-secondary cursor-pointer"
-                >
-                  {socialIcons[social]}
-                </motion.a>
-              ))}
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
 
       {/* CTA Section */}
       <motion.div
