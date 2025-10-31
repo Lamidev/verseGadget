@@ -31,7 +31,6 @@
 
 //   const handleCheckout = () => {
 //     if (!isAuthenticated) {
-//       // Store current state to redirect back after login
 //       sessionStorage.setItem('redirectAfterLogin', '/shop/checkout');
 //       navigate("/auth/login");
 //     } else {
@@ -102,7 +101,7 @@
 //           <div className="space-y-2">
 //             <div className="flex justify-between text-sm">
 //               <span className="text-gray-600">Subtotal</span>
-//               <span className="font-medium">₦{totalCartAmount.toFixed(2)}</span>
+//               <span className="font-medium">₦{totalCartAmount.toLocaleString("en-NG")}</span>
 //             </div>
 //             <div className="flex justify-between text-sm">
 //               <span className="text-gray-600 flex items-center gap-1">
@@ -114,7 +113,7 @@
 //             <Separator />
 //             <div className="flex justify-between text-base sm:text-lg font-bold">
 //               <span>Total</span>
-//               <span>₦{totalCartAmount.toFixed(2)}</span>
+//               <span>₦{totalCartAmount.toLocaleString("en-NG")}</span>
 //             </div>
 //           </div>
           
@@ -255,7 +254,7 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium">₦{totalCartAmount.toLocaleString("en-NG")}</span>
+              <span className="font-medium text-orange-500">₦{totalCartAmount.toLocaleString("en-NG")}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600 flex items-center gap-1">
@@ -267,7 +266,7 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
             <Separator />
             <div className="flex justify-between text-base sm:text-lg font-bold">
               <span>Total</span>
-              <span>₦{totalCartAmount.toLocaleString("en-NG")}</span>
+              <span className="text-orange-500">₦{totalCartAmount.toLocaleString("en-NG")}</span>
             </div>
           </div>
           

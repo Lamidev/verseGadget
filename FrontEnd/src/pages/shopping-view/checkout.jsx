@@ -636,7 +636,7 @@ function ShoppingCheckout() {
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Subtotal ({cartItems.length} items)</span>
-                <span>₦{totalCartAmount.toLocaleString("en-NG")}</span>
+                <span className="text-orange-500">₦{totalCartAmount.toLocaleString("en-NG")}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 flex items-center gap-1">
@@ -648,12 +648,12 @@ function ShoppingCheckout() {
                     </span>
                   )}
                 </span>
-                <span>₦{deliveryPrice.toLocaleString("en-NG")}</span>
+                <span className="text-orange-500">₦{deliveryPrice.toLocaleString("en-NG")}</span>
               </div>
               <div className="border-t pt-3">
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total Amount</span>
-                  <span>₦{totalAmountWithDelivery.toLocaleString("en-NG")}</span>
+                  <span className="text-orange-500">₦{totalAmountWithDelivery.toLocaleString("en-NG")}</span>
                 </div>
               </div>
             </div>

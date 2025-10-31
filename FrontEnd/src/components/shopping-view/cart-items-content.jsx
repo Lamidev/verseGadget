@@ -85,7 +85,6 @@
 //       transition={{ duration: 0.2 }}
 //       className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-colors"
 //     >
-//       {/* Product Image */}
 //       <div className="flex-shrink-0">
 //         <img
 //           src={cartItem?.image}
@@ -94,9 +93,7 @@
 //         />
 //       </div>
 
-//       {/* Product Details - Improved responsive layout */}
 //       <div className="flex-1 min-w-0 space-y-2">
-//         {/* Title and Delete Button */}
 //         <div className="flex items-start justify-between gap-2">
 //           <h3 className="font-semibold text-sm line-clamp-2 leading-tight flex-1">
 //             {cartItem?.title}
@@ -112,21 +109,18 @@
 //           </Button>
 //         </div>
 
-//         {/* Price Information */}
 //         <div className="flex items-center gap-2">
 //           <span className="font-bold text-primary text-sm">
-//             ₦{currentPrice.toFixed(2)}
+//             ₦{currentPrice.toLocaleString("en-NG")}
 //           </span>
 //           {originalPrice && originalPrice > currentPrice && (
 //             <span className="text-xs text-gray-500 line-through">
-//               ₦{originalPrice.toFixed(2)}
+//               ₦{originalPrice.toLocaleString("en-NG")}
 //             </span>
 //           )}
 //         </div>
 
-//         {/* Quantity Controls and Total Price */}
 //         <div className="flex items-center justify-between">
-//           {/* Quantity Controls */}
 //           <div className="flex items-center gap-2">
 //             <Button
 //               variant="outline"
@@ -150,13 +144,12 @@
 //             </Button>
 //           </div>
           
-//           {/* Total Price for this item */}
 //           <div className="text-right">
 //             <div className="font-bold text-sm">
-//               ₦{itemTotal.toFixed(2)}
+//               ₦{itemTotal.toLocaleString("en-NG")}
 //             </div>
 //             <div className="text-xs text-gray-500 hidden xs:block">
-//               {cartItem?.quantity} × ₦{currentPrice.toFixed(2)}
+//               {cartItem?.quantity} × ₦{currentPrice.toLocaleString("en-NG")}
 //             </div>
 //           </div>
 //         </div>
@@ -276,15 +269,18 @@ function UserCartItemsContent({ cartItem }) {
           </Button>
         </div>
 
+        {/* Updated Price Display - Slash price first, then actual price in orange */}
         <div className="flex items-center gap-2">
-          <span className="font-bold text-primary text-sm">
-            ₦{currentPrice.toLocaleString("en-NG")}
-          </span>
-          {originalPrice && originalPrice > currentPrice && (
+          {originalPrice && (
             <span className="text-xs text-gray-500 line-through">
               ₦{originalPrice.toLocaleString("en-NG")}
             </span>
           )}
+          <span className={`font-bold text-sm ${
+            originalPrice ? 'text-orange-500' : 'text-primary'
+          }`}>
+            ₦{currentPrice.toLocaleString("en-NG")}
+          </span>
         </div>
 
         <div className="flex items-center justify-between">
@@ -312,7 +308,7 @@ function UserCartItemsContent({ cartItem }) {
           </div>
           
           <div className="text-right">
-            <div className="font-bold text-sm">
+            <div className="font-bold text-sm text-orange-500">
               ₦{itemTotal.toLocaleString("en-NG")}
             </div>
             <div className="text-xs text-gray-500 hidden xs:block">
