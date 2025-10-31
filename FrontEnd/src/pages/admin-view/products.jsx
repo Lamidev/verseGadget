@@ -216,6 +216,8 @@
 // }
 
 // export default AdminProducts;
+
+
 import ProductImageUpload from "@/components/admin-view/image-upload";
 import CommonForm from "@/components/common/form";
 import { Button } from "@/components/ui/button";
@@ -267,7 +269,6 @@ function AdminProducts() {
   const [currentEditedId, setCurrentEditedId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   
@@ -279,7 +280,6 @@ function AdminProducts() {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  // Reset form when dialog closes
   useEffect(() => {
     if (!openCreateProductsDialog) {
       setFormData(initialFormData);
@@ -289,7 +289,6 @@ function AdminProducts() {
     }
   }, [openCreateProductsDialog]);
 
-  // Pagination calculations
   const totalItems = productList.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -299,10 +298,8 @@ function AdminProducts() {
   function onSubmit(event) {
     event.preventDefault();
 
-    // Prepare the data to submit
     const submitData = {
       ...formData,
-      // Use uploaded image if available, otherwise keep existing image in edit mode
       image: uploadedImageUrl || formData.image
     };
 
@@ -360,18 +357,16 @@ function AdminProducts() {
     console.log("Editing product data:", product);
     setFormData({
       ...product,
-      image: product.image || "" // Ensure image is always a string
+      image: product.image || ""
     });
-    setUploadedImageUrl(""); // Reset uploaded image URL when starting edit
-    setImageFile(null); // Reset image file when starting edit
+    setUploadedImageUrl("");
+    setImageFile(null);
   }
 
   function isFormValid() {
-    // For new products, we need either uploadedImageUrl or formData.image
-    // For editing products, we need formData.image (the existing image) or uploadedImageUrl (new image)
     const hasValidImage = currentEditedId !== null 
-      ? (formData.image || uploadedImageUrl) // For edit: existing image OR new uploaded image
-      : uploadedImageUrl; // For add: must have uploaded image
+      ? (formData.image || uploadedImageUrl)
+      : uploadedImageUrl;
 
     const requiredFields = {
       title: formData.title,
@@ -398,17 +393,15 @@ function AdminProducts() {
     return hasValidImage && allRequiredFieldsFilled;
   }
 
-  // Pagination handlers
   function handlePageChange(page) {
     setCurrentPage(page);
   }
 
   function handleItemsPerPageChange(value) {
     setItemsPerPage(Number(value));
-    setCurrentPage(1); // Reset to first page when changing items per page
+    setCurrentPage(1);
   }
 
-  // Generate page numbers for pagination
   function getPageNumbers() {
     const pages = [];
     const maxVisiblePages = 5;
@@ -429,7 +422,6 @@ function AdminProducts() {
 
   return (
     <Fragment>
-      {/* Add Product Button with Framer Motion Animation */}
       <motion.div
         className="mb-5 flex justify-end w-full"
         initial={{ opacity: 0, y: -10 }}
@@ -438,14 +430,12 @@ function AdminProducts() {
       >
         <Button
           onClick={() => setOpenCreateProductsDialog(true)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="w-full sm:w-auto"
         >
           Add New Product
         </Button>
       </motion.div>
 
-      {/* Pagination Controls - Top */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Show</span>
@@ -469,7 +459,6 @@ function AdminProducts() {
         </div>
       </div>
 
-      {/* Product Grid with Animation - UPDATED FOR 2 PER ROW ON MOBILE */}
       <motion.div
         className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         initial="hidden"
@@ -500,27 +489,26 @@ function AdminProducts() {
         </AnimatePresence>
       </motion.div>
 
-      {/* No Products Message */}
       {currentProducts.length === 0 && (
         <div className="text-center py-12">
           <p className="text-muted-foreground text-lg">No products found.</p>
           <Button 
             onClick={() => setOpenCreateProductsDialog(true)}
-            className="mt-4"
+            className="mt-4 w-full sm:w-auto"
           >
             Add Your First Product
           </Button>
         </div>
       )}
 
-      {/* Pagination Controls - Bottom */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center mt-8 gap-2">
+        <div className="flex flex-wrap justify-center items-center mt-8 gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
+            className="flex-1 sm:flex-none min-w-[80px]"
           >
             Previous
           </Button>
@@ -531,6 +519,7 @@ function AdminProducts() {
               variant={currentPage === page ? "default" : "outline"}
               size="sm"
               onClick={() => handlePageChange(page)}
+              className="flex-1 sm:flex-none min-w-[40px]"
             >
               {page}
             </Button>
@@ -541,13 +530,13 @@ function AdminProducts() {
             size="sm"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
+            className="flex-1 sm:flex-none min-w-[80px]"
           >
             Next
           </Button>
         </div>
       )}
 
-      {/* Sheet Modal for Adding/Editing Product */}
       <Sheet
         open={openCreateProductsDialog}
         onOpenChange={() => {
@@ -556,33 +545,31 @@ function AdminProducts() {
       >
         <SheetContent
           side="right"
-          className="overflow-auto"
+          className="overflow-auto w-full sm:max-w-md lg:max-w-lg"
           as={motion.div}
           initial={{ x: "100%" }}
           animate={{ x: 0 }}
           exit={{ x: "100%" }}
           transition={{ type: "spring", stiffness: 200, damping: 30 }}
         >
-          <SheetHeader>
+          <SheetHeader className="sticky top-0 bg-background z-10 pb-4">
             <SheetTitle>
-              <h2>{currentEditedId !== null ? "Edit Product" : "Add New Product"}</h2>
+              <h2 className="text-xl font-bold">{currentEditedId !== null ? "Edit Product" : "Add New Product"}</h2>
             </SheetTitle>
           </SheetHeader>
 
-          {/* Product Image Upload */}
-          <ProductImageUpload
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            uploadedImageUrl={uploadedImageUrl}
-            setUploadedImageUrl={setUploadedImageUrl}
-            setImageLoadingState={setImageLoadingState}
-            imageLoadingState={imageLoadingState}
-            isEditMode={currentEditedId !== null}
-            existingImageUrl={currentEditedId !== null ? formData.image : ""}
-          />
+          <div className="space-y-6 pb-6">
+            <ProductImageUpload
+              imageFile={imageFile}
+              setImageFile={setImageFile}
+              uploadedImageUrl={uploadedImageUrl}
+              setUploadedImageUrl={setUploadedImageUrl}
+              setImageLoadingState={setImageLoadingState}
+              imageLoadingState={imageLoadingState}
+              isEditMode={currentEditedId !== null}
+              existingImageUrl={currentEditedId !== null ? formData.image : ""}
+            />
 
-          {/* Product Form */}
-          <div className="py-6">
             <CommonForm
               onSubmit={onSubmit}
               formData={formData}
