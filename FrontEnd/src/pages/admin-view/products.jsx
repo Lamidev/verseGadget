@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Package, ListFilter } from "lucide-react";
 
 const initialFormData = {
   image: "",
@@ -289,38 +290,62 @@ function AdminProducts() {
       )}
 
       {totalPages > 1 && (
-        <div className="flex flex-wrap justify-center items-center mt-8 gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="flex-1 sm:flex-none min-w-[80px]"
-          >
-            Previous
-          </Button>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8 pb-4 border-t pt-6">
+          <div className="text-sm text-muted-foreground font-medium order-2 sm:order-1">
+            Showing <span className="text-foreground font-bold">{startIndex + 1}</span> to <span className="text-foreground font-bold">{Math.min(endIndex, totalItems)}</span> of <span className="text-foreground font-bold">{totalItems}</span> products
+          </div>
 
-          {getPageNumbers().map((page) => (
+          <div className="flex items-center gap-2 order-1 sm:order-2">
             <Button
-              key={page}
-              variant={currentPage === page ? "default" : "outline"}
+              variant="outline"
               size="sm"
-              onClick={() => handlePageChange(page)}
-              className="flex-1 sm:flex-none min-w-[40px]"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 h-9 px-3 border-gray-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 disabled:opacity-50 transition-all font-bold"
             >
-              {page}
+              <ChevronLeft className="h-4 w-4" />
+              <span className="hidden sm:inline">Previous</span>
             </Button>
-          ))}
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="flex-1 sm:flex-none min-w-[80px]"
-          >
-            Next
-          </Button>
+            <div className="flex gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(page => {
+                  if (totalPages <= 5) return true;
+                  return Math.abs(page - currentPage) <= 1 || page === 1 || page === totalPages;
+                })
+                .map((page, index, array) => {
+                  const showEllipsis = index > 0 && page - array[index - 1] > 1;
+                  return (
+                    <div key={page} className="flex items-center gap-1">
+                      {showEllipsis && <span className="text-gray-400 px-1 font-bold">...</span>}
+                      <Button
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handlePageChange(page)}
+                        className={`h-9 w-9 p-0 font-bold transition-all ${currentPage === page
+                            ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600 shadow-sm"
+                            : "border-gray-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200"
+                          }`}
+                      >
+                        {page}
+                      </Button>
+                    </div>
+                  );
+                })
+              }
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-1 h-9 px-3 border-gray-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 disabled:opacity-50 transition-all font-bold"
+            >
+              <span className="hidden sm:inline">Next</span>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       )}
 

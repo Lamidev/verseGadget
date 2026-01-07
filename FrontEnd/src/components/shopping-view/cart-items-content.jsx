@@ -19,7 +19,7 @@
 
 //   function handleUpdateQuantity(getCartItem, typeOfAction) {
 //     const sessionId = getOrCreateSessionId();
-    
+
 //     if (typeOfAction === "plus") {
 //       const currentItem = cartItems.find(
 //         (item) => item.productId === getCartItem?.productId
@@ -143,7 +143,7 @@
 //               <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
 //             </Button>
 //           </div>
-          
+
 //           <div className="text-right">
 //             <div className="font-bold text-sm">
 //               ₦{itemTotal.toLocaleString("en-NG")}
@@ -179,7 +179,7 @@ function UserCartItemsContent({ cartItem }) {
 
   function handleUpdateQuantity(getCartItem, typeOfAction) {
     const sessionId = getOrCreateSessionId();
-    
+
     if (typeOfAction === "plus") {
       const currentItem = cartItems.find(
         (item) => item.productId === getCartItem?.productId
@@ -249,7 +249,7 @@ function UserCartItemsContent({ cartItem }) {
         <img
           src={cartItem?.image}
           alt={cartItem?.title}
-          className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover border"
+          className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover border"
         />
       </div>
 
@@ -276,9 +276,8 @@ function UserCartItemsContent({ cartItem }) {
               ₦{originalPrice.toLocaleString("en-NG")}
             </span>
           )}
-          <span className={`font-bold text-sm ${
-            originalPrice ? 'text-orange-500' : 'text-primary'
-          }`}>
+          <span className={`font-bold text-sm ${originalPrice ? 'text-orange-500' : 'text-primary'
+            }`}>
             ₦{currentPrice.toLocaleString("en-NG")}
           </span>
         </div>
@@ -306,7 +305,7 @@ function UserCartItemsContent({ cartItem }) {
               <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
             </Button>
           </div>
-          
+
           <div className="text-right">
             <div className="font-bold text-sm text-orange-500">
               ₦{itemTotal.toLocaleString("en-NG")}

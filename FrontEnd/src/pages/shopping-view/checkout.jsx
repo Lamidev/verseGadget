@@ -53,10 +53,18 @@ function ShoppingCheckout() {
             <h2 className="text-xl font-bold text-blue-800 mb-2">
               Loading Your Cart...
             </h2>
-            <p className="text-blue-700 mb-4">
-              Please wait while we prepare your cart for checkout.
-            </p>
-            <div className="flex justify-center">
+            <div className="text-[11px] sm:text-xs text-gray-500 font-medium bg-gray-50/80 p-3 rounded-xl border border-gray-100 flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <Truck className="h-3.5 w-3.5 text-peach-500" />
+                <span>Lagos: <span className="text-gray-900 font-bold">Same Day Delivery</span></span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Package className="h-3.5 w-3.5 text-orange-400" />
+                <span>Outside Lagos: <span className="text-gray-900 font-bold">1-2 Business Days</span></span>
+              </div>
+            </div>
+
+            <div className="flex justify-center mt-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
           </div>
@@ -233,8 +241,8 @@ function ShoppingCheckout() {
         {[1, 2, 3, 4].map((step) => (
           <div key={step} className="flex flex-col items-center bg-white px-4">
             <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${currentStep >= step
-                ? 'bg-peach-600 border-peach-600 text-white'
-                : 'bg-white border-gray-300 text-gray-500'
+              ? 'bg-peach-600 border-peach-600 text-white'
+              : 'bg-white border-gray-300 text-gray-500'
               }`}>
               {step === 1 && <Package className="w-5 h-5" />}
               {step === 2 && <Truck className="w-5 h-5" />}
@@ -276,6 +284,20 @@ function ShoppingCheckout() {
             </div>
           </div>
 
+          {/* Delivery Timeline Badge */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 bg-peach-50/50 p-4 rounded-xl border border-peach-100">
+            <div className="flex items-center gap-2 text-sm font-semibold text-peach-700">
+              <Truck className="h-4 w-4" />
+              <span>Same Day Delivery (Lagos)</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-peach-200" />
+            <div className="flex items-center gap-2 text-sm font-semibold text-orange-700">
+              <Package className="h-4 w-4" />
+              <span>1-2 Days (Outside Lagos)</span>
+            </div>
+          </div>
+
+          {/* Order Details Grid */}
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h2 className="text-xl font-bold mb-4">Order Summary</h2>
             <div className="space-y-3">
@@ -307,7 +329,8 @@ function ShoppingCheckout() {
               <div className="flex items-start gap-2">
                 <Truck className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <div>
-                  <strong>Standard delivery:</strong> 2-3 business days
+                  <p>Lagos: <strong>Same Day Delivery</strong></p>
+                  <p>Outside Lagos: <strong>1-2 Business Days</strong></p>
                   {currentSelectedAddress && (
                     <div className="text-xs mt-1">
                       Delivery to {currentSelectedAddress.state}: ₦{deliveryPrice.toLocaleString("en-NG")}

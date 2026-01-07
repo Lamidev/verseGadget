@@ -15,6 +15,13 @@ import {
   TabletSmartphone,
   Tv,
   Watch,
+  Truck,
+  ShieldCheck,
+  Zap,
+  Headphones,
+  CheckCircle2,
+  Award,
+  Globe
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
@@ -51,24 +58,34 @@ const brandsWithIcon = [
   { id: "lenovo", label: "Lenovo", icon: Tv },
 ];
 
-const supportFeatures = [
+const whyChooseUs = [
   {
-    icon: FaTruck,
-    title: "Swift & Secure Delivery",
-    description:
-      "Our fast delivery policy applies to all orders, regardless of the order value or destination.",
+    icon: Truck,
+    title: "Swift Delivery",
+    description: "Lagos: Same Day Delivery. Outside Lagos: 1-2 Business Days.",
+    color: "text-peach-500",
+    bg: "bg-peach-50"
   },
   {
-    icon: FaCreditCard,
-    title: "Secure & Seamless Payment",
-    description:
-      "Your payment is always safe, secure, and protected at all times.",
+    icon: ShieldCheck,
+    title: "Secure Payment",
+    description: "100% secure payment processing with multi-layer encryption via Paystack.",
+    color: "text-green-500",
+    bg: "bg-green-50"
   },
   {
-    icon: FaHeadset,
-    title: "24/7 Support",
-    description:
-      "We are available 24/7 to assist you with any question, or issues you may have.",
+    icon: Award,
+    title: "Authentic Only",
+    description: "Every gadget is strictly brand new and authentic, sourced directly from manufacturers.",
+    color: "text-orange-500",
+    bg: "bg-orange-50"
+  },
+  {
+    icon: Headphones,
+    title: "Expert Support",
+    description: "Dedicated tech experts available 24/7 to resolve any issues you might have.",
+    color: "text-blue-500",
+    bg: "bg-blue-50"
   },
 ];
 
@@ -313,11 +330,23 @@ function ShoppingHome() {
         </Button>
       </div>
 
-      <section className="py-4 sm:py-8 px-4 sm:px-6">
+      <section className="py-12 sm:py-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-            Top Products
-          </h2>
+          <div className="flex items-center justify-between mb-8 sm:mb-12">
+            <div className="space-y-1">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+                Top <span className="text-peach-600">Products</span>
+              </h2>
+              <div className="h-1 w-12 bg-peach-500 rounded-full" />
+            </div>
+            <Button
+              onClick={() => navigate('/shop/listing')}
+              variant="ghost"
+              className="text-peach-600 font-bold hover:bg-peach-50 rounded-full group transition-all"
+            >
+              View All <ChevronRightIcon className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
             {displayedProducts.map((productItem, index) => (
               <motion.div
@@ -338,11 +367,14 @@ function ShoppingHome() {
         </div>
       </section>
 
-      <section className="py-4 sm:py-8 bg-gray-50 px-4 sm:px-6">
+      <section className="py-12 sm:py-20 bg-gray-50/50 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-            Shop by Category
-          </h2>
+          <div className="text-center mb-10 sm:mb-14">
+            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight uppercase">
+              Explore <span className="text-peach-600">Categories</span>
+            </h2>
+            <p className="text-gray-400 text-xs sm:text-sm font-bold mt-2 uppercase tracking-widest">Find what you're looking for</p>
+          </div>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
             {categoriesWithIcon.map(({ id, label, icon: Icon }) => (
               <motion.div key={id} whileHover={{ scale: 1.05 }}>
@@ -365,11 +397,14 @@ function ShoppingHome() {
         </div>
       </section>
 
-      <section className="py-4 sm:py-8 bg-white px-4 sm:px-6">
+      <section className="py-12 sm:py-20 bg-white px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-            Shop by Brand
-          </h2>
+          <div className="text-center mb-10 sm:mb-14">
+            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight uppercase">
+              Leading <span className="text-peach-600">Brands</span>
+            </h2>
+            <p className="text-gray-400 text-xs sm:text-sm font-bold mt-2 uppercase tracking-widest">Trusted by millions worldwide</p>
+          </div>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
             {brandsWithIcon.map(({ id, label, icon: Icon }) => (
               <motion.div key={id} whileHover={{ scale: 1.05 }}>
@@ -392,11 +427,23 @@ function ShoppingHome() {
         </div>
       </section>
 
-      <section className="py-6 sm:py-10 px-4 sm:px-6">
+      <section className="py-12 sm:py-20 bg-gray-50/30 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-7">
-            Featured Products
-          </h2>
+          <div className="flex items-center justify-between mb-8 sm:mb-12">
+            <div className="space-y-1">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+                Featured <span className="text-peach-600">Picks</span>
+              </h2>
+              <div className="h-1 w-12 bg-peach-500 rounded-full" />
+            </div>
+            <Button
+              onClick={() => navigate('/shop/listing')}
+              variant="ghost"
+              className="text-peach-600 font-bold hover:bg-peach-50 rounded-full group transition-all"
+            >
+              View All <ChevronRightIcon className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
             {featuredProducts.map((productItem, index) => (
               <motion.div
@@ -417,32 +464,67 @@ function ShoppingHome() {
         </div>
       </section>
 
-      <section className="py-6 sm:py-10 bg-gray-50 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          {supportFeatures.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.03 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card className="w-full">
-                  <CardContent className="flex flex-col items-center p-4 sm:p-6">
-                    <Icon className="w-8 h-8 sm:w-10 sm:h-10 mb-3 text-peach-500" />
-                    <h3 className="font-bold text-base sm:text-lg mb-2 text-center">
-                      {feature.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-center text-gray-600">
-                      {feature.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            );
-          })}
+      <section className="py-12 sm:py-20 bg-white px-4 sm:px-6 relative overflow-hidden">
+        {/* Subtle Background Elements */}
+        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-peach-50 rounded-full blur-3xl opacity-50" />
+        <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-orange-50 rounded-full blur-3xl opacity-50" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-12 sm:mb-16 space-y-4">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 tracking-tight"
+            >
+              Why <span className="text-peach-600">Gadgets Grid?</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-gray-500 max-w-2xl mx-auto text-sm sm:text-base font-medium"
+            >
+              We combine cutting-edge technology with world-class service to give you a shopping experience that is fast, secure, and reliable.
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {whyChooseUs.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -8 }}
+                  className="group"
+                >
+                  <Card className="h-full border-none shadow-xl shadow-gray-100/50 hover:shadow-peach-100/50 transition-all duration-300 rounded-3xl overflow-hidden bg-white/50 backdrop-blur-sm border border-gray-50">
+                    <CardContent className="flex flex-col items-center p-8 sm:p-10 space-y-6">
+                      <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl ${feature.bg} flex items-center justify-center transition-transform duration-500 group-hover:rotate-12`}>
+                        <Icon className={`w-8 h-8 sm:w-10 sm:h-10 ${feature.color}`} />
+                      </div>
+                      <div className="text-center space-y-3">
+                        <h3 className="font-black text-xl text-gray-900 uppercase tracking-tight">
+                          {feature.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 font-medium leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </div>
+                      <div className="pt-2">
+                        <div className={`h-1 w-8 rounded-full ${feature.bg.replace('bg-', 'bg-').replace('-50', '-500')} opacity-20`} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 

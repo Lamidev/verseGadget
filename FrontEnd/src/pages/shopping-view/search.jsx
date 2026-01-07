@@ -11,8 +11,9 @@ import { getSearchResults, resetSearchResults } from "@/store/shop/search-slice"
 import { motion } from "framer-motion";
 import debounce from "lodash.debounce";
 import { getOrCreateSessionId } from "@/components/utils/session";
-import { Loader2, Search, XCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Search, XCircle, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 function SearchProducts() {
   const [keyword, setKeyword] = useState("");
@@ -26,11 +27,26 @@ function SearchProducts() {
   const { cartItems } = useSelector((state) => state.shopCart);
   const { toast } = useToast();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+
+  const totalItems = searchResults?.length || 0;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentResults = searchResults?.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Debounced search to reduce unnecessary dispatches
   const debouncedSearch = debounce((value) => {
     if (value.trim().length >= 1) {
       setSearchParams(new URLSearchParams(`?keyword=${value}`));
       setIsLoading(true);
+      setCurrentPage(1);
       dispatch(getSearchResults(value)).finally(() => setIsLoading(false));
     } else {
       setSearchParams(new URLSearchParams());
@@ -163,8 +179,32 @@ function SearchProducts() {
       {/* Results Section */}
       <div className="space-y-6">
         {searchResults.length > 0 && (
-          <div className="flex items-center justify-between border-b pb-4">
-            <h2 className="text-xl font-bold">Search Results ({searchResults.length.toLocaleString()})</h2>
+          <div className="flex flex-col sm:flex-row items-center justify-between border-b pb-4 gap-4">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold">Search Results</h2>
+              <Badge variant="secondary" className="bg-peach-50 text-peach-600 border-peach-100">
+                {totalItems}
+              </Badge>
+            </div>
+
+            <div className="flex items-center gap-2 bg-gray-50 p-1 rounded-lg border border-gray-100">
+              <span className="text-[10px] font-black text-gray-400 px-2 uppercase tracking-widest">Per Page:</span>
+              {[12, 24, 48].map((num) => (
+                <button
+                  key={num}
+                  onClick={() => {
+                    setItemsPerPage(num);
+                    setCurrentPage(1);
+                  }}
+                  className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${itemsPerPage === num
+                      ? "bg-white text-peach-600 shadow-sm"
+                      : "text-gray-400 hover:text-gray-600"
+                    }`}
+                >
+                  {num}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -186,7 +226,7 @@ function SearchProducts() {
           className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
           layout
         >
-          {searchResults.map((item) => (
+          {currentResults.map((item) => (
             <motion.div
               layout
               key={item.id}
@@ -202,6 +242,67 @@ function SearchProducts() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Pagination Section */}
+        {totalItems > itemsPerPage && (
+          <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-8 bg-white border border-gray-100 rounded-3xl shadow-sm gap-6">
+            <div className="text-sm text-muted-foreground font-medium order-2 sm:order-1">
+              Showing <span className="text-foreground font-bold">{indexOfFirstItem + 1}</span> to <span className="text-foreground font-bold">{Math.min(indexOfLastItem, totalItems)}</span> of <span className="text-foreground font-bold">{totalItems}</span> results
+            </div>
+
+            <div className="flex items-center gap-2 order-1 sm:order-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="h-9 px-3 border-gray-200 hover:bg-peach-50 hover:text-peach-600 hover:border-peach-200 disabled:opacity-50 transition-all font-bold"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                <span className="hidden sm:inline ml-1">Previous</span>
+              </Button>
+
+              <div className="flex gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(page => {
+                    if (totalPages <= 5) return true;
+                    return Math.abs(page - currentPage) <= 1 || page === 1 || page === totalPages;
+                  })
+                  .map((page, index, array) => {
+                    const showEllipsis = index > 0 && page - array[index - 1] > 1;
+                    return (
+                      <div key={page} className="flex items-center gap-1">
+                        {showEllipsis && <span className="text-gray-400 px-1 font-bold">...</span>}
+                        <Button
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handlePageChange(page)}
+                          className={`h-9 w-9 p-0 font-bold transition-all ${currentPage === page
+                              ? "bg-peach-500 hover:bg-peach-600 text-white border-peach-500 shadow-sm"
+                              : "border-gray-200 hover:bg-peach-50 hover:text-peach-600 hover:border-peach-200"
+                            }`}
+                        >
+                          {page}
+                        </Button>
+                      </div>
+                    );
+                  })
+                }
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="h-9 px-3 border-gray-200 hover:bg-peach-50 hover:text-peach-600 hover:border-peach-200 disabled:opacity-50 transition-all font-bold"
+              >
+                <span className="hidden sm:inline mr-1">Next</span>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Product Details Dialog */}

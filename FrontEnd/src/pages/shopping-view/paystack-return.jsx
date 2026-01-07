@@ -1,223 +1,8 @@
 
 
-
-// import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-// import { capturePayment, clearOrderStorage } from "@/store/shop/order-slice";
-// import { useEffect, useState } from "react";
-// import { useDispatch } from "react-redux";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import { motion } from "framer-motion";
-// import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-// import { useToast } from "@/components/ui/use-toast";
-
-// function PaystackReturnPage() {
-//   const dispatch = useDispatch();
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   const params = new URLSearchParams(location.search);
-//   const reference = params.get("reference");
-//   const trxref = params.get("trxref");
-
-//   const { toast } = useToast();
-//   const [isProcessing, setIsProcessing] = useState(true);
-//   const [isSuccessful, setIsSuccessful] = useState(null);
-//   const [errorMessage, setErrorMessage] = useState("");
-
-//   useEffect(() => {
-//     const paymentReference = reference || trxref;
-    
-//     if (paymentReference) {
-//       // Use localStorage to get order data
-//       const orderId = localStorage.getItem("currentOrderId");
-//       const storedReference = localStorage.getItem("currentOrderReference");
-      
-//       console.log("Payment Reference from Paystack:", paymentReference);
-//       console.log("Order ID from localStorage:", orderId);
-//       console.log("Stored Reference from localStorage:", storedReference);
-
-//       // Clean up the orderId if it's stringified
-//       const cleanOrderId = orderId ? orderId.replace(/"/g, '') : null;
-
-//       if (cleanOrderId) {
-//         processPaymentWithOrderId(paymentReference, cleanOrderId);
-//       } else {
-//         console.log("No orderId in localStorage, trying to find order by reference...");
-//         processPaymentWithReference(paymentReference);
-//       }
-//     } else {
-//       console.error("No payment reference found in URL");
-//       setIsProcessing(false);
-//       setIsSuccessful(false);
-//       setErrorMessage("No payment reference found in the return URL.");
-//       toast({
-//         title: "Invalid Payment Return",
-//         description: "No payment reference found. Please contact support.",
-//         variant: "destructive",
-//       });
-//     }
-//   }, [reference, trxref, dispatch, navigate, toast]);
-
-//   const processPaymentWithOrderId = (paymentReference, orderId) => {
-//     dispatch(capturePayment({ reference: paymentReference, orderId }))
-//       .then((data) => {
-//         console.log("Capture Payment Response:", data);
-//         setIsProcessing(false);
-
-//         if (data?.payload?.success) {
-//           setIsSuccessful(true);
-//           // Clear localStorage after successful payment
-//           dispatch(clearOrderStorage());
-//           toast({
-//             title: "Payment Successful!",
-//             description: "Your payment has been successfully processed.",
-//           });
-//           setTimeout(() => navigate("/shop/payment-success"), 2000);
-//         } else {
-//           setIsSuccessful(false);
-//           const errorMsg = data?.payload?.message || "There was an error processing your payment.";
-//           setErrorMessage(errorMsg);
-//           toast({
-//             title: "Payment Failed",
-//             description: errorMsg,
-//             variant: "destructive",
-//           });
-//         }
-//       })
-//       .catch((error) => {
-//         console.error("Payment capture error:", error);
-//         setIsProcessing(false);
-//         setIsSuccessful(false);
-//         const errorMsg = error.response?.data?.message || "An unexpected error occurred.";
-//         setErrorMessage(errorMsg);
-//         toast({
-//           title: "Payment Error",
-//           description: errorMsg,
-//           variant: "destructive",
-//         });
-//       });
-//   };
-
-//   const processPaymentWithReference = async (paymentReference) => {
-//     try {
-//       // If we don't have orderId, we need to find the order by reference
-//       const response = await fetch(
-//         `${import.meta.env.VITE_API_BASE_URL}/shop/order/find-by-reference/${paymentReference}`
-//       );
-      
-//       if (response.ok) {
-//         const data = await response.json();
-//         if (data.success && data.order) {
-//           // Found the order, now process payment
-//           processPaymentWithOrderId(paymentReference, data.order._id);
-//         } else {
-//           throw new Error("Order not found for reference");
-//         }
-//       } else {
-//         throw new Error("Failed to find order");
-//       }
-//     } catch (error) {
-//       console.error("Error finding order by reference:", error);
-//       setIsProcessing(false);
-//       setIsSuccessful(false);
-//       const errorMsg = "Could not find your order. Please contact support with your payment reference.";
-//       setErrorMessage(errorMsg);
-//       toast({
-//         title: "Order Not Found",
-//         description: errorMsg,
-//         variant: "destructive",
-//       });
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-//       <motion.div
-//         initial={{ opacity: 0, y: -50 }}
-//         animate={{ opacity: 1, y: 0 }}
-//         transition={{ duration: 0.5, ease: "easeInOut" }}
-//         className="w-full max-w-md"
-//       >
-//         <Card className="p-8 shadow-lg rounded-lg">
-//           <CardHeader className="flex items-center justify-center p-0">
-//             {isProcessing && (
-//               <motion.div
-//                 initial={{ scale: 0.8 }}
-//                 animate={{ scale: 1 }}
-//                 transition={{ duration: 0.4 }}
-//                 className="text-center"
-//               >
-//                 <Loader2 size={48} className="animate-spin text-blue-600 mx-auto" />
-//                 <CardTitle className="mt-5 text-2xl text-gray-700">
-//                   Processing Payment...
-//                 </CardTitle>
-//                 <p className="mt-2 text-gray-600">Please wait while we confirm your payment.</p>
-//               </motion.div>
-//             )}
-
-//             {!isProcessing && isSuccessful && (
-//               <motion.div
-//                 initial={{ scale: 0.8 }}
-//                 animate={{ scale: 1 }}
-//                 transition={{ duration: 0.4 }}
-//                 className="text-center"
-//               >
-//                 <CheckCircle size={60} className="text-green-600 mx-auto" />
-//                 <CardTitle className="mt-5 text-2xl font-bold text-green-600">
-//                   Payment Successful!
-//                 </CardTitle>
-//                 <p className="mt-2 text-gray-600">Redirecting to success page...</p>
-//               </motion.div>
-//             )}
-
-//             {!isProcessing && isSuccessful === false && (
-//               <motion.div
-//                 initial={{ scale: 0.8 }}
-//                 animate={{ scale: 1 }}
-//                 transition={{ duration: 0.4 }}
-//                 className="text-center"
-//               >
-//                 <AlertCircle size={60} className="text-red-600 mx-auto" />
-//                 <CardTitle className="mt-5 text-2xl font-bold text-red-600">
-//                   Payment Failed
-//                 </CardTitle>
-//                 <p className="mt-2 text-gray-600 mb-2">
-//                   {errorMessage || "There was an issue processing your payment."}
-//                 </p>
-//                 {reference && (
-//                   <p className="text-sm text-gray-500 mb-4">
-//                     Reference: {reference}
-//                   </p>
-//                 )}
-//                 <div className="space-y-3">
-//                   <Button
-//                     className="w-full bg-red-600 hover:bg-red-700 text-white"
-//                     onClick={() => navigate("/shop/checkout")}
-//                   >
-//                     Return to Checkout
-//                   </Button>
-//                   <Button
-//                     variant="outline"
-//                     className="w-full"
-//                     onClick={() => navigate("/shop/account")}
-//                   >
-//                     Go to Account
-//                   </Button>
-//                 </div>
-//               </motion.div>
-//             )}
-//           </CardHeader>
-//         </Card>
-//       </motion.div>
-//     </div>
-//   );
-// }
-
-// export default PaystackReturnPage;
-
-
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { capturePayment, clearOrderStorage } from "@/store/shop/order-slice";
+import { clearCart } from "@/store/shop/cart-slice";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -241,11 +26,11 @@ function PaystackReturnPage() {
 
   useEffect(() => {
     const paymentReference = reference || trxref;
-    
+
     if (paymentReference) {
       const orderId = localStorage.getItem("currentOrderId");
       const storedReference = localStorage.getItem("currentOrderReference");
-      
+
       const cleanOrderId = orderId ? orderId.replace(/"/g, '') : null;
 
       if (cleanOrderId) {
@@ -273,6 +58,7 @@ function PaystackReturnPage() {
         if (data?.payload?.success) {
           setIsSuccessful(true);
           dispatch(clearOrderStorage());
+          dispatch(clearCart());
           toast({
             title: "Payment Successful!",
             description: "Your payment has been successfully processed.",
@@ -307,7 +93,7 @@ function PaystackReturnPage() {
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/shop/order/find-by-reference/${paymentReference}`
       );
-      
+
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.order) {
@@ -332,122 +118,131 @@ function PaystackReturnPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-peach-50 to-orange-100 p-4">
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
         className="w-full max-w-md"
       >
-        <Card className="p-8 shadow-xl border-0 bg-white/80 backdrop-blur-sm rounded-2xl">
-          <CardHeader className="flex items-center justify-center p-0 space-y-6">
+        <Card className="p-8 shadow-2xl border-0 bg-white/90 backdrop-blur-md rounded-3xl relative overflow-hidden">
+          {/* Decorative Elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-peach-100 rounded-full blur-3xl -mr-16 -mt-16 opacity-60" />
+
+          <CardHeader className="flex items-center justify-center p-0 space-y-6 relative z-10">
             {isProcessing && (
               <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.4 }}
-                className="text-center space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center space-y-6 w-full"
               >
-                <div className="relative">
-                  <Loader2 size={64} className="animate-spin text-blue-600 mx-auto" />
+                <div className="relative mx-auto w-24 h-24">
+                  <motion.div
+                    className="absolute inset-0 border-4 border-peach-100 rounded-full"
+                    initial={{ opacity: 1 }}
+                  />
+                  <motion.div
+                    className="absolute inset-0 border-4 border-t-peach-500 rounded-full"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <CreditCard className="h-6 w-6 text-blue-600" />
+                    <CreditCard className="h-8 w-8 text-peach-500" />
                   </div>
                 </div>
+
                 <div className="space-y-2">
-                  <CardTitle className="text-2xl font-bold text-gray-800">
-                    Processing Payment
+                  <CardTitle className="text-2xl font-black text-gray-800 tracking-tight">
+                    Securing Payment
                   </CardTitle>
-                  <p className="text-gray-600 text-sm">Please wait while we confirm your payment</p>
+                  <p className="text-gray-500 font-medium">Please do not refresh this page</p>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <motion.div 
-                    className="bg-blue-600 h-2 rounded-full"
-                    initial={{ width: "0%" }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
+
+                <div className="space-y-1">
+                  <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden border border-gray-50">
+                    <motion.div
+                      className="bg-gradient-to-r from-peach-400 to-peach-600 h-full"
+                      initial={{ x: "-100%" }}
+                      animate={{ x: "0%" }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  </div>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Processing Transaction</p>
                 </div>
               </motion.div>
             )}
 
             {!isProcessing && isSuccessful && (
               <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.4 }}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
                 className="text-center space-y-6"
               >
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto shadow-inner">
                   <CheckCircle size={48} className="text-green-600" />
                 </div>
                 <div className="space-y-2">
-                  <CardTitle className="text-2xl font-bold text-green-600">
-                    Payment Successful!
+                  <CardTitle className="text-2xl font-black text-green-600">
+                    Verified!
                   </CardTitle>
-                  <p className="text-gray-600">Your payment has been confirmed</p>
+                  <p className="text-gray-600 font-medium">Transaction completed successfully</p>
                 </div>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="flex items-center justify-center space-x-2 text-sm text-gray-500"
-                >
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span>Redirecting to success page...</span>
-                </motion.div>
+                <div className="flex items-center justify-center space-x-2 text-xs font-bold text-gray-400 bg-gray-50 py-2 px-4 rounded-full border border-gray-100">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                  <span>PREPARING YOUR RECEIPT</span>
+                </div>
               </motion.div>
             )}
 
             {!isProcessing && isSuccessful === false && (
               <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.4 }}
-                className="text-center space-y-6"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="text-center space-y-6 w-full"
               >
-                <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto shadow-inner">
                   <AlertCircle size={48} className="text-red-600" />
                 </div>
                 <div className="space-y-3">
-                  <CardTitle className="text-2xl font-bold text-red-600">
-                    Payment Failed
+                  <CardTitle className="text-2xl font-black text-red-600">
+                    Verification Failed
                   </CardTitle>
-                  <p className="text-gray-600">
-                    {errorMessage || "There was an issue processing your payment"}
+                  <p className="text-gray-600 font-medium px-4">
+                    {errorMessage || "We couldn't verify your payment tracking. Please check your bank."}
                   </p>
                   {reference && (
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-sm text-gray-500 font-mono">
-                        Reference: {reference}
+                    <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 mx-4">
+                      <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Payment Reference</p>
+                      <p className="text-xs text-gray-700 font-mono break-all leading-relaxed">
+                        {reference}
                       </p>
                     </div>
                   )}
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-3 px-4">
                   <Button
-                    className="w-full bg-red-600 hover:bg-red-700 text-white shadow-lg"
+                    className="w-full bg-peach-500 hover:bg-peach-600 text-white shadow-lg shadow-peach-100 py-6 rounded-2xl font-bold transition-all hover:scale-[1.02]"
                     onClick={() => navigate("/shop/checkout")}
                   >
                     <CreditCard className="h-4 w-4 mr-2" />
-                    Return to Checkout
+                    Try Another Method
                   </Button>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
-                      className="flex-1"
+                      className="flex-1 rounded-xl border-gray-200 hover:bg-gray-50 font-semibold"
                       onClick={() => navigate("/shop/account")}
                     >
-                      <Home className="h-4 w-4 mr-2" />
-                      My Account
+                      <Home className="h-4 w-4 mr-2 text-peach-500" />
+                      Orders
                     </Button>
                     <Button
                       variant="outline"
-                      className="flex-1"
+                      className="flex-1 rounded-xl border-gray-200 hover:bg-gray-50 font-semibold"
                       onClick={() => navigate("/")}
                     >
-                      <ArrowLeft className="h-4 w-4 mr-2" />
-                      Go Home
+                      <ArrowLeft className="h-4 w-4 mr-2 text-peach-500" />
+                      Home
                     </Button>
                   </div>
                 </div>

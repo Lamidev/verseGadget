@@ -221,16 +221,16 @@ function AdminOrdersView() {
     dispatch(deleteOrder(selectedOrderId))
       .unwrap()
       .then((res) => {
-        toast({ 
-          title: "Success", 
+        toast({
+          title: "Success",
           description: res.message,
           variant: "default"
         });
         dispatch(getAllOrdersForAdmin());
       })
       .catch(() => {
-        toast({ 
-          title: "Error", 
+        toast({
+          title: "Error",
           description: "Failed to delete order!",
           variant: "destructive"
         });
@@ -271,8 +271,10 @@ function AdminOrdersView() {
       case "rejected":
         return "bg-red-100 text-red-800 border-red-200";
       case "in process":
+      case "inProcess":
         return "bg-blue-100 text-blue-800 border-blue-200";
       case "inShipping":
+      case "shipping":
         return "bg-purple-100 text-purple-800 border-purple-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
@@ -290,8 +292,10 @@ function AdminOrdersView() {
       case "rejected":
         return "❌";
       case "in process":
+      case "inProcess":
         return "🔧";
       case "inShipping":
+      case "shipping":
         return "🚚";
       default:
         return "📋";
@@ -300,7 +304,7 @@ function AdminOrdersView() {
 
   const filteredOrders = orderList?.filter(order => {
     const matchesSearch = order?._id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order?.addressInfo?.fullName?.toLowerCase().includes(searchTerm.toLowerCase());
+      order?.addressInfo?.fullName?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || order?.orderStatus === statusFilter;
     return matchesSearch && matchesStatus;
   }) || [];
@@ -340,52 +344,42 @@ function AdminOrdersView() {
       </div>
 
       {/* Pagination buttons */}
-      <div className="flex items-center gap-1">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handlePageChange(1)}
-          disabled={currentPage === 1}
-          className="h-8 w-8 p-0"
-        >
-          <ChevronsLeft className="h-4 w-4" />
-        </Button>
+      <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="h-8 w-8 p-0"
+          className="flex items-center gap-1 px-3 h-8"
         >
           <ChevronLeft className="h-4 w-4" />
+          <span className="hidden sm:inline">Previous</span>
         </Button>
-        
-        {/* Page numbers */}
-        <div className="flex gap-1 mx-2">
-          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-            let pageNum;
-            if (totalPages <= 5) {
-              pageNum = i + 1;
-            } else if (currentPage <= 3) {
-              pageNum = i + 1;
-            } else if (currentPage >= totalPages - 2) {
-              pageNum = totalPages - 4 + i;
-            } else {
-              pageNum = currentPage - 2 + i;
-            }
 
-            return (
-              <Button
-                key={pageNum}
-                variant={currentPage === pageNum ? "default" : "outline"}
-                size="sm"
-                onClick={() => handlePageChange(pageNum)}
-                className="h-8 w-8 p-0 text-xs"
-              >
-                {pageNum}
-              </Button>
-            );
-          })}
+        {/* Page numbers */}
+        <div className="flex gap-1 mx-1">
+          {Array.from({ length: totalPages }, (_, i) => i + 1)
+            .filter(page => {
+              if (totalPages <= 5) return true;
+              return Math.abs(page - currentPage) <= 1 || page === 1 || page === totalPages;
+            })
+            .map((page, index, array) => {
+              const showEllipsis = index > 0 && page - array[index - 1] > 1;
+              return (
+                <div key={page} className="flex items-center gap-1">
+                  {showEllipsis && <span className="text-gray-400 px-1">...</span>}
+                  <Button
+                    variant={currentPage === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handlePageChange(page)}
+                    className={`h-8 w-8 p-0 text-xs ${currentPage === page ? "bg-blue-600 text-white" : ""}`}
+                  >
+                    {page}
+                  </Button>
+                </div>
+              );
+            })
+          }
         </div>
 
         <Button
@@ -393,18 +387,10 @@ function AdminOrdersView() {
           size="sm"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="h-8 w-8 p-0"
+          className="flex items-center gap-1 px-3 h-8"
         >
+          <span className="hidden sm:inline">Next</span>
           <ChevronRight className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handlePageChange(totalPages)}
-          disabled={currentPage === totalPages}
-          className="h-8 w-8 p-0"
-        >
-          <ChevronsRight className="h-4 w-4" />
         </Button>
       </div>
     </div>
@@ -430,7 +416,7 @@ function AdminOrdersView() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
@@ -442,7 +428,7 @@ function AdminOrdersView() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
@@ -503,8 +489,8 @@ function AdminOrdersView() {
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
               <option value="confirmed">Confirmed</option>
-              <option value="in process">In Process</option>
-              <option value="inShipping">In Shipping</option>
+              <option value="inProcess">In Process</option>
+              <option value="shipping">In Shipping</option>
               <option value="delivered">Delivered</option>
               <option value="rejected">Rejected</option>
             </select>
@@ -621,7 +607,7 @@ function AdminOrdersView() {
                             variant="outline"
                             size="sm"
                             className="flex items-center gap-2 hover:bg-red-50 hover:text-red-600 border-red-200 text-red-600"
-                            >
+                          >
                             <Trash2 className="h-4 w-4" />
                             Delete
                           </Button>
@@ -636,8 +622,8 @@ function AdminOrdersView() {
                         <Package className="h-12 w-12 mb-4 text-gray-300" />
                         <p className="text-lg font-semibold mb-2">No orders found</p>
                         <p className="text-sm">
-                          {searchTerm || statusFilter !== "all" 
-                            ? "Try adjusting your search or filters" 
+                          {searchTerm || statusFilter !== "all"
+                            ? "Try adjusting your search or filters"
                             : "No orders have been placed yet"}
                         </p>
                       </div>
@@ -754,8 +740,8 @@ function AdminOrdersView() {
                   <Package className="h-12 w-12 mb-4 text-gray-300" />
                   <p className="text-lg font-semibold mb-2">No orders found</p>
                   <p className="text-sm">
-                    {searchTerm || statusFilter !== "all" 
-                      ? "Try adjusting your search or filters" 
+                    {searchTerm || statusFilter !== "all"
+                      ? "Try adjusting your search or filters"
                       : "No orders have been placed yet"}
                   </p>
                 </div>
@@ -810,8 +796,8 @@ function AdminOrdersView() {
             <Button variant="outline" onClick={() => setOpenDeleteDialog(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
-            <Button 
-              className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto" 
+            <Button
+              className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto"
               onClick={handleDeleteOrder}
             >
               <Trash2 className="h-4 w-4 mr-2" />

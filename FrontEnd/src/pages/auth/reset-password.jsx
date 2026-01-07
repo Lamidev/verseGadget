@@ -82,21 +82,47 @@ const ResetPasswordPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="max-w-md w-full bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden"
+      className="w-full bg-white/70 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50 overflow-hidden"
     >
-      <div className="p-6">
-        <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
-          Reset Password
-        </h2>
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        {message && <p className="text-green-500 text-sm mb-4">{message}</p>}
+      <div className="p-8 sm:p-12">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Lock className="h-8 w-8 text-blue-500" />
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 tracking-tighter mb-2">
+            Secure Your Account
+          </h2>
+          <p className="text-gray-500 font-medium leading-relaxed">
+            Create a strong new password to regain access to your account.
+          </p>
+        </div>
+
+        {error && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-red-500 text-sm font-bold mb-6 text-center bg-red-50 py-2 rounded-lg border border-red-100"
+          >
+            {error}
+          </motion.p>
+        )}
+
+        {message && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-green-500 text-sm font-bold mb-6 text-center bg-green-50 py-2 rounded-lg border border-green-100"
+          >
+            {message}
+          </motion.p>
+        )}
 
         <CommonForm
           formControls={formControls}
           formData={formData}
           setFormData={setFormData}
           onSubmit={handleSubmit}
-          buttonText={isLoading ? "Resetting..." : "Set New Password"}
+          buttonText={isLoading ? "Updating Security..." : "Confirm New Password"}
           isBtnDisabled={isLoading}
         />
       </div>

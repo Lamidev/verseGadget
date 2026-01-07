@@ -138,10 +138,9 @@ const capturePayment = async (req, res) => {
     }
 
     try {
-      const cart = await Cart.findOne({ userId: order.userId });
-      if (cart) {
-        await Cart.findByIdAndDelete(cart._id);
-      }
+      console.log(`Attempting to clear cart for userId: ${order.userId}`);
+      const deletedCart = await Cart.deleteMany({ userId: order.userId });
+      console.log(`Cart deletion result:`, deletedCart);
     } catch (cartError) {
       console.error("Cart deletion error after payment:", cartError);
     }

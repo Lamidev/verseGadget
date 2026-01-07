@@ -134,8 +134,13 @@ function ShoppingOrderDetailsView({ orderDetails }) {
   const getStatusColor = (status) => {
     switch (status) {
       case "confirmed":
+      case "delivered":
         return "bg-green-100 text-green-800 border-green-200";
       case "pending":
+      case "in process":
+      case "inProcess":
+      case "inShipping":
+      case "shipping":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "rejected":
         return "bg-red-100 text-red-800 border-red-200";
@@ -144,10 +149,10 @@ function ShoppingOrderDetailsView({ orderDetails }) {
     }
   };
 
- const formatOrderId = (id) => {
-  if (!id) return "N/A";
-  return `ORD${id.slice(-8).toUpperCase()}`;
-};
+  const formatOrderId = (id) => {
+    if (!id) return "N/A";
+    return `ORD${id.slice(-8).toUpperCase()}`;
+  };
 
   return (
     <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
@@ -169,7 +174,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
 
         {/* Order Summary */}
         <div className="bg-gray-50 rounded-lg p-4">
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-gray-500" />
               <span className="font-medium">Order Date:</span>
@@ -180,6 +185,19 @@ function ShoppingOrderDetailsView({ orderDetails }) {
               <span className="font-medium">Payment:</span>
               <span className="capitalize">{orderDetails?.paymentMethod}</span>
             </div>
+          </div>
+        </div>
+
+        {/* Delivery Timeline Badge */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 bg-peach-50/50 p-4 rounded-xl border border-peach-100 mb-2">
+          <div className="flex items-center gap-2 text-sm font-semibold text-peach-700">
+            <Truck className="h-4 w-4" />
+            <span>Same Day Delivery (Lagos)</span>
+          </div>
+          <div className="hidden sm:block w-px h-4 bg-peach-200" />
+          <div className="flex items-center gap-2 text-sm font-semibold text-orange-700">
+            <Package className="h-4 w-4" />
+            <span>1-2 Days (Outside Lagos)</span>
           </div>
         </div>
 
@@ -250,10 +268,10 @@ function ShoppingOrderDetailsView({ orderDetails }) {
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
                 <div className="flex items-center gap-3 flex-1">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.title}
-                    className="w-12 h-12 rounded-lg object-cover border"
+                    className="w-16 h-16 rounded-lg object-cover border"
                   />
                   <div className="min-w-0 flex-1">
                     <p className="font-medium text-sm line-clamp-2">{item.title}</p>

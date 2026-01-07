@@ -115,7 +115,8 @@ const ORDER_RECEIPT_TEMPLATE = `
     <!-- Delivery Information Section -->
     <div style="margin-top: 20px; padding: 15px; background-color: #fff; border-radius: 5px; border: 1px solid #eee;">
       <h3 style="color: ${THEME_COLOR}; margin-top: 0;">Delivery Information</h3>
-      <p>We aim to deliver your order within <strong>2-3 business days</strong>.</p>
+      <p>Lagos: <strong>Same Day Delivery</strong></p>
+      <p>Outside Lagos: <strong>1-2 Business Days</strong></p>
       <p>You will receive a notification once your order has been shipped, along with a tracking number to monitor its progress.</p>
       <p>If you have any questions about your delivery, feel free to contact our support team at <strong>gadgetsgridphones@gmail.com</strong>.</p>
     </div>

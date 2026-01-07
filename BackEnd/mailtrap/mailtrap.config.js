@@ -3,18 +3,22 @@
 require("dotenv").config();
 const { MailtrapClient } = require("mailtrap");
 
-// Load environment variables
+// Load environment variables and ensure endpoint has protocol
 const MAILTRAP_TOKEN = process.env.MAILTRAP_TOKEN;
-const MAILTRAP_ENDPOINT = process.env.MAILTRAP_ENDPOINT; // Add this line
+let MAILTRAP_ENDPOINT = process.env.MAILTRAP_ENDPOINT || "https://send.api.mailtrap.io";
 
-// Ensure credentials exist
-if (!MAILTRAP_TOKEN || !MAILTRAP_ENDPOINT) { // Update this check
-  throw new Error("Missing Mailtrap configuration in environment variables.");
+if (MAILTRAP_ENDPOINT && !MAILTRAP_ENDPOINT.startsWith("http")) {
+  MAILTRAP_ENDPOINT = `https://${MAILTRAP_ENDPOINT}`;
 }
 
-// Initialize Mailtrap client with endpoint
+// Ensure credentials exist
+if (!MAILTRAP_TOKEN) {
+  throw new Error("Missing MAILTRAP_TOKEN in environment variables.");
+}
+
+// Initialize Mailtrap client - only use endpoint if it's not the default or if it's needed for a different region
 const mailtrapClient = new MailtrapClient({
-  endpoint: MAILTRAP_ENDPOINT, // Add this line
+  endpoint: MAILTRAP_ENDPOINT || "https://send.api.mailtrap.io",
   token: MAILTRAP_TOKEN
 });
 
@@ -26,5 +30,6 @@ const sender = {
 
 module.exports = {
   mailtrapClient,
-  sender
+  sender,
+  MAILTRAP_ENDPOINT
 };

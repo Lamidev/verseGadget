@@ -6,7 +6,7 @@ const addAddress = async (req, res) => {
 
     if (!userId || !fullName || !address || !lga || !state || !phone
       //  || !pincode
-        || !country || !notes) {
+      || !country) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
