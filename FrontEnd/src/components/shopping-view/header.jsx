@@ -209,39 +209,41 @@ function MobileSheetContent({ closeSheet }) {
   }
 
   return (
-    <SheetContent side="left" className="flex flex-col h-full justify-between p-6 bg-white border-r-0">
-      <div className="flex flex-col gap-8">
-        <div className="flex items-center gap-3">
-          <div className="rounded-xl border-2 border-primary/20 p-0.5">
-            <img
-              src={GadgetgridLogo}
-              alt="GadgetGrid Logo"
-              className="h-10 w-10 object-cover rounded-lg"
-            />
+    <SheetContent side="left" className="flex flex-col h-full p-0 bg-white border-r-0 max-w-[85vw] w-[300px]">
+      <div className="flex-1 overflow-y-auto p-6 pb-4">
+        <div className="flex flex-col gap-8">
+          <div className="flex items-center gap-3">
+            <div className="rounded-xl border-2 border-primary/20 p-0.5">
+              <img
+                src={GadgetgridLogo}
+                alt="GadgetGrid Logo"
+                className="h-10 w-10 object-cover rounded-lg"
+              />
+            </div>
+            <span className="text-xl font-black text-gray-900 tracking-tighter uppercase">
+              Gadget<span className="text-primary">Grid</span>
+            </span>
           </div>
-          <span className="text-xl font-black text-gray-900 tracking-tighter uppercase">
-            Gadget<span className="text-primary">Grid</span>
-          </span>
-        </div>
 
-        <MenuItems closeSheet={closeSheet} />
+          <MenuItems closeSheet={closeSheet} />
 
-        <div className="space-y-4">
-          <p className="text-[10px] font-bold text-gray-700 uppercase tracking-widest pl-1">Connect with us</p>
-          <div className="flex items-center gap-4 pl-1">
-            <Facebook className="w-5 h-5 text-gray-700 hover:text-blue-600 transition-colors cursor-pointer" />
-            <Instagram className="w-5 h-5 text-gray-700 hover:text-pink-600 transition-colors cursor-pointer" />
-            <Twitter className="w-5 h-5 text-gray-700 hover:text-blue-400 transition-colors cursor-pointer" />
-            <PhoneCall className="w-5 h-5 text-gray-700 hover:text-green-600 transition-colors cursor-pointer" />
+          <div className="space-y-4">
+            <p className="text-[10px] font-bold text-gray-700 uppercase tracking-widest pl-1">Connect with us</p>
+            <div className="flex items-center gap-4 pl-1">
+              <Facebook className="w-5 h-5 text-gray-700 hover:text-blue-600 transition-colors cursor-pointer" />
+              <Instagram className="w-5 h-5 text-gray-700 hover:text-pink-600 transition-colors cursor-pointer" />
+              <Twitter className="w-5 h-5 text-gray-700 hover:text-blue-400 transition-colors cursor-pointer" />
+              <PhoneCall className="w-5 h-5 text-gray-700 hover:text-green-600 transition-colors cursor-pointer" />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 mt-6">
+      <div className="flex flex-col gap-3 p-6 border-t border-gray-100 bg-gray-50/50">
         {user?.userName ? (
           <>
-            <div className="flex items-center gap-3 p-4 bg-peach-50 rounded-2xl mb-2 border border-peach-100">
-              <Avatar className="h-10 w-10 ring-2 ring-white">
+            <div className="flex items-center gap-3 p-4 bg-white rounded-2xl mb-2 border border-peach-100 shadow-sm">
+              <Avatar className="h-10 w-10 ring-2 ring-peach-100">
                 <AvatarFallback className="bg-peach-600 text-white text-sm font-bold">
                   {user?.userName[0].toUpperCase()}
                 </AvatarFallback>
@@ -258,7 +260,7 @@ function MobileSheetContent({ closeSheet }) {
                 navigate("/shop/account");
                 closeSheet();
               }}
-              className="justify-start rounded-xl hover:bg-gray-100 font-bold"
+              className="justify-start rounded-xl hover:bg-white hover:shadow-sm font-bold transition-all text-gray-700"
             >
               <User className="mr-3 h-4 w-4 text-peach-600" />
               My Account
@@ -267,7 +269,7 @@ function MobileSheetContent({ closeSheet }) {
             <Button
               variant="ghost"
               onClick={() => setIsLogoutDialogOpen(true)}
-              className="justify-start rounded-xl hover:bg-red-50 text-red-600 font-bold"
+              className="justify-start rounded-xl hover:bg-red-50 text-red-600 font-bold hover:shadow-sm transition-all"
             >
               <LogOut className="mr-3 h-4 w-4" />
               Sign Out
@@ -276,7 +278,7 @@ function MobileSheetContent({ closeSheet }) {
         ) : (
           <div className="grid grid-cols-2 gap-3">
             <Button
-              className="rounded-xl font-bold bg-gray-900 hover:bg-gray-800 text-white"
+              className="rounded-xl font-bold bg-peach-500 hover:bg-peach-600 text-white shadow-lg shadow-peach-100 transition-all hover:scale-[1.02]"
               onClick={() => {
                 navigate("/auth/login");
                 closeSheet();
@@ -286,7 +288,7 @@ function MobileSheetContent({ closeSheet }) {
             </Button>
             <Button
               variant="outline"
-              className="rounded-xl font-bold border-gray-200 hover:bg-gray-50"
+              className="rounded-xl font-bold border-peach-200 text-peach-600 hover:bg-peach-50 transition-all hover:scale-[1.02]"
               onClick={() => {
                 navigate("/auth/register");
                 closeSheet();
