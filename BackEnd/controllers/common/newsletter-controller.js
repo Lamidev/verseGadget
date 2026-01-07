@@ -23,6 +23,15 @@ const subscribeToNewsletter = async (req, res) => {
         const newSubscriber = new Subscriber({ email });
         await newSubscriber.save();
 
+        // Send Email Notifications (Don't block response)
+        const { sendNewsletterWelcomeEmail, sendNewsletterAdminNotification } = require("../../mailtrap/emails");
+        Promise.allSettled([
+            sendNewsletterWelcomeEmail(email),
+            sendNewsletterAdminNotification(email)
+        ]).then(results => {
+            console.log("Newsletter emails processed:", results.map(r => r.status));
+        });
+
         res.status(201).json({
             success: true,
             message: "Successfully subscribed to our newsletter!",
