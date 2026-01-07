@@ -2,20 +2,29 @@ const Product = require("../../models/products");
 
 const getFilteredProducts = async (req, res) => {
   try {
-    const { category = [], brand = [], condition = [], sortBy = "price-lowtohigh" } = req.query;
+    const { category = [], brand = [], condition = [], minPrice, maxPrice, sortBy = "price-lowtohigh" } = req.query;
 
     let filters = {};
 
     if (category.length) {
-      filters.category = { $in: category.split(",") };
+      filters.category = { $in: Array.isArray(category) ? category : category.split(",") };
     }
 
     if (brand.length) {
-      filters.brand = { $in: brand.split(",") };
+      filters.brand = { $in: Array.isArray(brand) ? brand : brand.split(",") };
     }
 
     if (condition.length) {
-      filters.condition = { $in: condition.split(",") }; // ✅ Add this line
+      filters.condition = { $in: Array.isArray(condition) ? condition : condition.split(",") };
+    }
+
+    if ((minPrice !== undefined && minPrice !== null && minPrice !== "") ||
+      (maxPrice !== undefined && maxPrice !== null && maxPrice !== "")) {
+      filters.price = {};
+      if (minPrice !== undefined && minPrice !== null && minPrice !== "")
+        filters.price.$gte = parseFloat(minPrice);
+      if (maxPrice !== undefined && maxPrice !== null && maxPrice !== "")
+        filters.price.$lte = parseFloat(maxPrice);
     }
 
     let sort = {};

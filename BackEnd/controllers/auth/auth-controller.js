@@ -1,12 +1,7 @@
-
-
-
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-
 const User = require("../../models/users");
-const express = require("express");
 
 const {
   generateTokenAndSetCookie,
@@ -19,7 +14,9 @@ const {
   sendWelcomeEmail,
 } = require("../../mailtrap/emails");
 
-// Register
+/**
+ * Register a new user
+ */
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
   try {
@@ -29,11 +26,11 @@ const registerUser = async (req, res) => {
 
     const checkUser = await User.findOne({ email });
     if (checkUser)
-      return res.status(400).json({ success: false, message: "User already exists!" });
+      return res.status(400).json({ success: false, message: "A user with this email already exists" });
 
     const hashPassword = await bcrypt.hash(password, 12);
     const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
-    
+
     const newUser = new User({
       userName,
       email,
@@ -44,30 +41,33 @@ const registerUser = async (req, res) => {
 
     await newUser.save();
     generateTokenAndSetCookie(res, newUser._id);
-    
+
     // Email sending - won't break registration if it fails
     const emailSent = await sendVerificationEmail(newUser.email, verificationToken);
     if (!emailSent) {
-      console.log("Email sending failed, but user registered successfully");
+      console.error("Verification email sending failed for:", newUser.email);
     }
 
-    const user = newUser.toObject(); 
-    user.id = user._id; 
-    delete user._id; 
-    
-    res.status(200).json({
+    const user = newUser.toObject();
+    user.id = user._id;
+    delete user._id;
+    delete user.password; // Security: ensure password hash is never sent to frontend
+
+    res.status(201).json({
       success: true,
-      message: "Registration successful. Check your email for verification.",
+      message: "Registration successful. Please check your email for verification code.",
       user,
     });
-    
+
   } catch (e) {
-    console.log("Registration error:", e);
-    res.status(500).json({ success: false, message: e.message || "An error occurred" });
+    console.error("Registration error:", e);
+    res.status(500).json({ success: false, message: "Internal server error during registration" });
   }
 };
 
-// Verify Email
+/**
+ * Verify user email with code
+ */
 const verifyEmail = async (req, res) => {
   const { code } = req.body;
   try {
@@ -75,13 +75,13 @@ const verifyEmail = async (req, res) => {
       verificationToken: code,
       verificationTokenExpiresAt: { $gt: Date.now() },
     });
-    if (!user)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Invalid or expired verification code",
-        });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired verification code",
+      });
+    }
 
     user.isVerified = true;
     user.verificationToken = undefined;
@@ -90,29 +90,33 @@ const verifyEmail = async (req, res) => {
 
     await sendWelcomeEmail(user.email, user.userName);
 
-      // Clear any existing tokens before redirecting to login
-      res.clearCookie("token");
-      
-    res
-      .status(200)
-      .json({ success: true, message: "Email verified successfully" });
+    // Clear session so user has to log in fresh after verification
+    res.clearCookie("token");
+
+    res.status(200).json({ success: true, message: "Email verified successfully" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("Verify email error:", error);
+    res.status(500).json({ success: false, message: "Internal server error during verification" });
   }
 };
 
-// Login
+/**
+ * Authenticate user
+ */
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user)
-      return res.status(400).json({ success: false, message: "User doesn't exist!" });
+
+    // Security: Use generic error message to prevent account enumeration
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Invalid email or password" });
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid)
-      return res.json({ success: false, message: "Incorrect password!" });
+    if (!isPasswordValid) {
+      return res.status(401).json({ success: false, message: "Invalid email or password" });
+    }
 
     generateTokenAndSetCookie(res, user._id);
     user.lastLogin = new Date();
@@ -121,37 +125,39 @@ const loginUser = async (req, res) => {
     const userData = user.toObject();
     userData.id = userData._id;
     delete userData._id;
-    
+    delete userData.password; // Security: ensure password hash is never sent
+
     res.status(200).json({
       success: true,
       message: "Logged in successfully",
       user: userData,
     });
-    
+
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ success: false, message: "An error occurred" });
+    console.error("Login error:", e);
+    res.status(500).json({ success: false, message: "Internal server error during login" });
   }
 };
 
-// Logout
+/**
+ * Log out user
+ */
 const logoutUser = (req, res) => {
   res.cookie("token", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     expires: new Date(0),
-  }).json({ success: true, message: "Logged out successfully!" });
-  
+  }).status(200).json({ success: true, message: "Logged out successfully" });
 };
 
-// Forgot Password
+/**
+ * Handle forgot password request
+ */
 const forgotPassword = async (req, res) => {
-
   const { email } = req.body;
 
   if (!email) {
-    console.log("Email is missing in request body");
     return res.status(400).json({ success: false, message: "Email is required" });
   }
 
@@ -159,8 +165,11 @@ const forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      console.log("User not found with email:", email);
-      return res.status(400).json({ success: false, message: "User not found" });
+      // Security: Even if user not found, return success to prevent email enumeration
+      return res.status(200).json({
+        success: true,
+        message: "If an account exists with this email, a reset link has been sent"
+      });
     }
 
     const resetToken = crypto.randomBytes(20).toString("hex");
@@ -169,38 +178,37 @@ const forgotPassword = async (req, res) => {
     user.resetPasswordExpiresAt = Date.now() + 3600000; // 1 hour
     await user.save();
 
-
     await sendPasswordResetEmail(
       user.email,
       `${process.env.CLIENT_URL}/auth/reset-password/${resetToken}`
     );
-  
 
     res.status(200).json({
       success: true,
-      message: "Password reset link sent to your email",
+      message: "If an account exists with this email, a reset link has been sent",
     });
   } catch (error) {
-    console.log("Error in forgotPassword function:", error);
-    res.status(500).json({ success: false, message: "An error occurred" });
+    console.error("Forgot password error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
-
-
-// Reset Password
+/**
+ * Reset password with token
+ */
 const resetPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
+
   try {
     const user = await User.findOne({
       resetPasswordToken: token,
       resetPasswordExpiresAt: { $gt: Date.now() },
     });
-    if (!user)
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid or expired reset token" });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid or expired reset token" });
+    }
 
     user.password = await bcrypt.hash(password, 12);
     user.resetPasswordToken = undefined;
@@ -208,22 +216,22 @@ const resetPassword = async (req, res) => {
     await user.save();
 
     await sendResetSuccessEmail(user.email);
-    res
-      .status(200)
-      .json({ success: true, message: "Password reset successful" });
+    res.status(200).json({ success: true, message: "Password reset successful" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "An error occurred" });
+    console.error("Reset password error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
-// Authentication Middleware
+/**
+ * Authentication Middleware
+ */
 const authMiddleware = (req, res, next) => {
-  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
-  
+  // Security: Only accept token from cookies to prevent XSS-to-CSRF escalation
+  const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json({ success: false, message: "Unauthorized! No token." });
+    return res.status(401).json({ success: false, message: "Unauthorized: No token provided" });
   }
 
   try {
@@ -234,16 +242,18 @@ const authMiddleware = (req, res, next) => {
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({ success: false, message: "Session expired. Please log in again." });
     }
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.status(401).json({ success: false, message: "Invalid session token" });
   }
 };
 
-
+/**
+ * Check current auth status
+ */
 const checkAuth = async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
     if (!user) {
-      return res.status(400).json({ success: false, message: "User not found" });
+      return res.status(401).json({ success: false, message: "User not found" });
     }
 
     const userData = user.toObject();
@@ -252,11 +262,10 @@ const checkAuth = async (req, res) => {
 
     res.status(200).json({ success: true, user: userData });
   } catch (error) {
-    console.error("Error in checkAuth:", error); // Log the error
-    res.status(500).json({ success: false, message: "An error occurred", error: error.message });
+    console.error("checkAuth error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
-
 
 module.exports = {
   registerUser,
@@ -267,5 +276,4 @@ module.exports = {
   resetPassword,
   authMiddleware,
   checkAuth,
- 
 };

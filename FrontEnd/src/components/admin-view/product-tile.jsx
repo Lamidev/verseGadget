@@ -38,31 +38,30 @@ function AdminProductTile({
 
   return (
     <div className="w-full rounded-lg overflow-hidden group transition duration-300 hover:shadow-lg p-3 bg-white border border-gray-100">
-      
+
       {/* Product Image Standalone */}
-      <div className="cursor-pointer mb-3 relative">
-        <img 
-          src={product?.image} 
-          alt={product?.title} 
-          className="w-full h-52 object-contain rounded-md"
+      <div className="cursor-pointer mb-3 relative bg-transparent">
+        <img
+          src={product?.image}
+          alt={product?.title}
+          className="w-full h-64 object-contain rounded-md"
         />
-        
+
         {/* Discount Badge */}
         {discountPercentage > 0 && (
           <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
             -{discountPercentage}%
           </div>
         )}
-        
+
         {/* Stock Status Badge */}
         <div className="absolute top-2 left-2">
-          <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-            product?.totalStock > 10 
-              ? "bg-green-100 text-green-800" 
-              : product?.totalStock > 0 
+          <div className={`px-2 py-1 rounded-full text-xs font-medium ${product?.totalStock > 10
+            ? "bg-green-100 text-green-800"
+            : product?.totalStock > 0
               ? "bg-orange-100 text-orange-800"
               : "bg-red-100 text-red-800"
-          }`}>
+            }`}>
             Stock: {product?.totalStock || 0}
           </div>
         </div>
@@ -156,7 +155,7 @@ function AdminProductTile({
                   Confirm Deletion
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to delete "<strong>{product?.title}</strong>"? 
+                  Are you sure you want to delete "<strong>{product?.title}</strong>"?
                   This action cannot be undone and will permanently remove the product from your store.
                 </AlertDialogDescription>
               </AlertDialogHeader>

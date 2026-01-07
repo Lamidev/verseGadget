@@ -28,6 +28,7 @@ import ResetPasswordPage from "./pages/auth/reset-password";
 import AboutPage from "./pages/shopping-view/about";
 import LoadingSpinner from "./components/shopping-view/loading-spinner";
 import AuthListener from "@/components/shopping-view/authListener";
+import ScrollToTop from "./components/common/scroll-to-top";
 
 function App() {
   const { user, isAuthenticated, isLoading, isCheckingAuth } = useSelector((state) => state.auth);
@@ -43,6 +44,7 @@ function App() {
     <div className="flex flex-col overflow-hidden bg-white">
       {/* ADD AUTH LISTENER HERE - at the root level */}
       <AuthListener />
+      <ScrollToTop />
 
       <Routes>
         {/* Redirect root to the shop home */}
