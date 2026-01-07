@@ -41,37 +41,53 @@ function ForgotPasswordPage() {
 
   return (
     <motion.div
-      className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden"
+      className="w-full bg-white/70 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50 overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="p-6">
-        <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
-          Forgot Password
-        </h2>
+      <div className="p-8 sm:p-12">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-peach-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Mail className="h-8 w-8 text-peach-500" />
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 tracking-tighter mb-2">
+            Reset Password
+          </h2>
+          <p className="text-gray-500 font-medium leading-relaxed">
+            Enter your email address and we'll send you a link to restore access.
+          </p>
+        </div>
 
         {!isSubmitted ? (
           <CommonForm
             formControls={forgotPasswordControls}
-            buttonText="Send Reset Link"
+            buttonText={isLoading ? <Loader className="w-6 h-6 animate-spin mx-auto" /> : "Request Access"}
             formData={formData}
             setFormData={setFormData}
             onSubmit={handleSubmit}
             isBtnDisabled={isLoading}
           />
         ) : (
-          <div className="text-center">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-gray-300">
-              Check your email for a password reset link.
-            </motion.div>
-          </div>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="text-center p-6 bg-green-50 rounded-2xl border border-green-100"
+          >
+            <p className="text-green-700 font-bold">
+              Success! Check your email for the recovery link.
+            </p>
+          </motion.div>
         )}
-      </div>
-      <div className="px-6 py-3 bg-gray-900 bg-opacity-50 flex justify-center">
-        <Link to={"/auth/login"} className="text-white hover:underline flex items-center gap-2">
-          <ArrowLeft size={18} /> Back to Login
-        </Link>
+
+        <div className="mt-8 pt-8 border-t border-gray-100">
+          <Link
+            to={"/auth/login"}
+            className="flex items-center justify-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-colors"
+          >
+            <ArrowLeft size={18} /> Back to Sign In
+          </Link>
+        </div>
       </div>
     </motion.div>
   );

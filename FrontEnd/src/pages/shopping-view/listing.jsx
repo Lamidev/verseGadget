@@ -8,7 +8,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowUpDown, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowUpDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2, LayoutGrid, List } from "lucide-react";
 import { sortOptions } from "@/config";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -68,7 +68,7 @@ function ShoppingListing() {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(12);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
   const [isLoading, setIsLoading] = useState(false);
 
   function handleSort(value) {
@@ -270,10 +270,11 @@ function ShoppingListing() {
   }, [productDetails]);
 
   // Pagination logic
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const totalItems = productList?.length || 0;
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
   const currentProducts = productList?.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(productList?.length / productsPerPage);
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Scroll to top on page change
   useEffect(() => {
@@ -396,57 +397,75 @@ function ShoppingListing() {
           )}
 
           {/* Pagination */}
-          {productList?.length > productsPerPage && (
-            <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-3 bg-background border-t rounded-b-lg gap-3">
-              <div className="w-full sm:w-auto">
-                <p className="text-sm text-muted-foreground text-center sm:text-left">
-                  Showing <span className="font-medium">{(currentPage - 1) * productsPerPage + 1}</span> to{' '}
-                  <span className="font-medium">
-                    {Math.min(currentPage * productsPerPage, productList?.length || 0)}
+          {totalItems > itemsPerPage && (
+            <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-6 bg-background border-t rounded-b-lg gap-6">
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto order-2 sm:order-1">
+                <p className="text-sm text-muted-foreground font-medium">
+                  Showing <span className="text-foreground font-bold">{indexOfFirstProduct + 1}</span> to{' '}
+                  <span className="text-foreground font-bold">
+                    {Math.min(indexOfLastProduct, totalItems)}
                   </span>{' '}
-                  of <span className="font-medium">{productList?.length || 0}</span> results
+                  of <span className="text-foreground font-bold">{totalItems}</span> results
                 </p>
+
+                <div className="flex items-center gap-2 bg-gray-50 p-1 rounded-lg border border-gray-100">
+                  <span className="text-[10px] font-black text-gray-400 px-2 uppercase tracking-widest">Per Page:</span>
+                  {[12, 24, 48].map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => {
+                        setItemsPerPage(num);
+                        setCurrentPage(1);
+                      }}
+                      className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${itemsPerPage === num
+                        ? "bg-white text-peach-600 shadow-sm"
+                        : "text-gray-400 hover:text-gray-600"
+                        }`}
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="flex items-center justify-center w-full sm:w-auto space-x-1">
+              <div className="flex items-center justify-center w-full sm:w-auto gap-2 order-1 sm:order-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1 || isLoading || isFilterLoading}
-                  className="px-2 sm:px-3 py-1.5 rounded-md"
+                  className="h-9 px-3 border-gray-200 hover:bg-peach-50 hover:text-peach-600 hover:border-peach-200 disabled:opacity-50 transition-all font-bold"
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  <span className="sr-only sm:not-sr-only">Previous</span>
+                  <span className="hidden sm:inline ml-1">Previous</span>
                 </Button>
 
-                <div className="flex items-center space-x-1">
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
-                    }
-
-                    return (
-                      <Button
-                        key={pageNum}
-                        variant={currentPage === pageNum ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => !isLoading && handlePageChange(pageNum)}
-                        disabled={isLoading || isFilterLoading}
-                        className={`h-8 w-8 sm:h-9 sm:w-9 p-0 text-xs sm:text-sm ${currentPage === pageNum ? 'bg-primary text-primary-foreground' : ''
-                          }`}
-                      >
-                        {pageNum}
-                      </Button>
-                    );
-                  })}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(page => {
+                      if (totalPages <= 5) return true;
+                      return Math.abs(page - currentPage) <= 1 || page === 1 || page === totalPages;
+                    })
+                    .map((page, index, array) => {
+                      const showEllipsis = index > 0 && page - array[index - 1] > 1;
+                      return (
+                        <div key={page} className="flex items-center gap-1">
+                          {showEllipsis && <span className="text-gray-400 px-1 font-bold">...</span>}
+                          <Button
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => !isLoading && handlePageChange(page)}
+                            disabled={isLoading || isFilterLoading}
+                            className={`h-9 w-9 p-0 font-bold transition-all ${currentPage === page
+                              ? "bg-peach-500 hover:bg-peach-600 text-white border-peach-500 shadow-sm"
+                              : "border-gray-200 hover:bg-peach-50 hover:text-peach-600 hover:border-peach-200"
+                              }`}
+                          >
+                            {page}
+                          </Button>
+                        </div>
+                      );
+                    })}
                 </div>
 
                 <Button
@@ -454,9 +473,9 @@ function ShoppingListing() {
                   size="sm"
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages || isLoading || isFilterLoading}
-                  className="px-2 sm:px-3 py-1.5 rounded-md"
+                  className="h-9 px-3 border-gray-200 hover:bg-peach-50 hover:text-peach-600 hover:border-peach-200 disabled:opacity-50 transition-all font-bold"
                 >
-                  <span className="sr-only sm:not-sr-only">Next</span>
+                  <span className="hidden sm:inline mr-1">Next</span>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>

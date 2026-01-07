@@ -163,11 +163,10 @@ const {
   VERIFICATION_EMAIL_TEMPLATE,
   ORDER_RECEIPT_TEMPLATE
 } = require("./email-template.js");
-const { mailtrapClient, sender } = require("./mailtrap.config.js");
+const { mailtrapClient, sender, MAILTRAP_ENDPOINT } = require("./mailtrap.config.js");
 
 // Load environment variables
 const MAILTRAP_TOKEN = process.env.MAILTRAP_TOKEN;
-const MAILTRAP_ENDPOINT = process.env.MAILTRAP_ENDPOINT;
 
 // Common function for handling email sending errors
 const handleEmailError = (error, message) => {
@@ -182,10 +181,10 @@ const handleEmailError = (error, message) => {
 // Format order ID consistently - handle both string and ObjectId
 const formatOrderId = (id) => {
   if (!id) return "N/A";
-  
+
   // Convert to string if it's an ObjectId
   const idString = id.toString ? id.toString() : String(id);
-  
+
   // Use the last 8 characters for consistency
   return `ORD${idString.slice(-8).toUpperCase()}`;
 };
@@ -286,10 +285,10 @@ exports.sendResetSuccessEmail = async (email) => {
 // Send Order Receipt Email
 exports.sendReceiptEmail = async (email, order) => {
   const recipient = [{ email }];
-  
+
   try {
     // Format cart items with proper Naira formatting
-    const cartItemsHTML = order.cartItems.map(item => 
+    const cartItemsHTML = order.cartItems.map(item =>
       `<li>${item.title} - ${formatNaira(item.price)} x ${item.quantity} = ${formatNaira(item.price * item.quantity)}</li>`
     ).join("");
 

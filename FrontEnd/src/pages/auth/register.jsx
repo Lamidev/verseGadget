@@ -39,30 +39,39 @@ function AuthRegister() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mx-auto w-full max-w-md space-y-4 bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden"
+      className="w-full bg-white/70 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50 overflow-hidden"
     >
-      <div className="p-6">
-        <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
-          Create Account
-        </h2>
+      <div className="p-8 sm:p-12">
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-black text-gray-900 tracking-tighter mb-2">
+            Create Account
+          </h2>
+          <p className="text-gray-500 font-medium">Join the premium world of gadgets</p>
+        </div>
 
         <CommonForm
           formControls={registerFormControls}
-          buttonText="Sign Up"
+          buttonText="Complete Registration"
           formData={formData}
           setFormData={setFormData}
           onSubmit={onSubmit}
         />
 
-        <PasswordStrengthMeter password={formData.password} />
-      </div>
-      <div className="px-6 py-3 bg-gray-900 bg-opacity-50 flex justify-center">
-        <p className="text-sm text-white">
-          Already have an account?{" "}
-          <Link to={"/auth/login"} className="text-white hover:underline">
-            Login
+        <div className="mt-6">
+          <PasswordStrengthMeter password={formData.password} />
+        </div>
+
+        <div className="mt-10 pt-8 border-t border-gray-100 flex flex-col items-center">
+          <p className="text-sm text-gray-600 font-medium mb-4">
+            Already a member?
+          </p>
+          <Link
+            to={"/auth/login"}
+            className="w-full py-3 px-6 rounded-xl border-2 border-peach-100 text-peach-600 font-black text-center hover:bg-peach-50 transition-all active:scale-95"
+          >
+            Sign In Instead
           </Link>
-        </p>
+        </div>
       </div>
     </motion.div>
   );

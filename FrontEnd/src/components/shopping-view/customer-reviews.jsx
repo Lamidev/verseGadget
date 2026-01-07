@@ -103,7 +103,7 @@ const CustomerReviews = () => {
                 <img
                   src={review.avatar}
                   alt={review.name}
-                  className="w-20 h-20 rounded-full object-cover mb-4 border-4 border-purple-200"
+                  className="w-20 h-20 rounded-full object-cover mb-4 border-4 border-peach-100"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -111,12 +111,12 @@ const CustomerReviews = () => {
                     )}&background=random&color=fff&size=128`;
                   }}
                 />
-                <h4 className="font-semibold text-gray-800 text-lg mb-3">
+                <h4 className="font-semibold text-gray-800 text-lg mb-3 uppercase tracking-tight">
                   {review.name}
                 </h4>
                 <div className="relative mb-4">
-                  <FaQuoteLeft className="text-purple-100 text-4xl absolute -top-2 -left-2 opacity-60" />
-                  <p className="text-gray-600 relative z-10 pl-6 leading-relaxed">
+                  <FaQuoteLeft className="text-peach-100 text-4xl absolute -top-2 -left-2 opacity-60" />
+                  <p className="text-gray-600 relative z-10 pl-6 leading-relaxed italic font-medium">
                     {review.comment}
                   </p>
                 </div>

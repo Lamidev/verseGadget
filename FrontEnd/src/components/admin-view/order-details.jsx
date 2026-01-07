@@ -260,18 +260,20 @@ function AdminOrderDetailsView({ orderDetails }) {
       case "rejected":
         return "bg-red-100 text-red-800 border-red-200";
       case "in process":
+      case "inProcess":
         return "bg-blue-100 text-blue-800 border-blue-200";
       case "inShipping":
+      case "shipping":
         return "bg-purple-100 text-purple-800 border-purple-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
-const formatOrderId = (id) => {
-  if (!id) return "N/A";
-  return `ORD${id.slice(-8).toUpperCase()}`;
-};
+  const formatOrderId = (id) => {
+    if (!id) return "N/A";
+    return `ORD${id.slice(-8).toUpperCase()}`;
+  };
 
   // Calculate total items and subtotal
   const totalItems = orderDetails?.cartItems?.reduce((sum, item) => sum + item.quantity, 0) || 0;
@@ -283,7 +285,7 @@ const formatOrderId = (id) => {
         <Package className="h-5 w-5 text-blue-600" />
         Order Details - {formatOrderId(orderDetails?._id)}
       </DialogTitle>
-      
+
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -429,8 +431,8 @@ const formatOrderId = (id) => {
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
                 <div className="flex items-center gap-3 flex-1">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.title}
                     className="w-12 h-12 rounded-lg object-cover border"
                   />
@@ -447,7 +449,7 @@ const formatOrderId = (id) => {
                 </div>
               </motion.div>
             ))}
-            
+
             {/* Order Summary */}
             <div className="bg-gray-100 border-t border-gray-200 p-4">
               <div className="flex justify-between items-center text-sm">
@@ -483,8 +485,8 @@ const formatOrderId = (id) => {
                 options: [
                   { id: "pending", label: "⏳ Pending" },
                   { id: "confirmed", label: "✅ Confirmed" },
-                  { id: "in process", label: "🔧 In Process" },
-                  { id: "inShipping", label: "🚚 In Shipping" },
+                  { id: "inProcess", label: "🔧 In Process" },
+                  { id: "shipping", label: "🚚 In Shipping" },
                   { id: "delivered", label: "📦 Delivered" },
                   { id: "rejected", label: "❌ Rejected" },
                 ],

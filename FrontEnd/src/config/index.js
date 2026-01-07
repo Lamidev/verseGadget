@@ -183,7 +183,7 @@
 //     { id: "smartwatches", label: "Smartwatches" },
 //     { id: "gaming", label: "Gaming" },
 //     { id: "accessories", label: "Accessories" },
-    
+
 //   ],
 //   brand: [
 //     { id: "apple", label: "Apple" },
@@ -415,8 +415,8 @@ export const shoppingViewHeaderMenuItems = [
     label: "Laptops",
     path: "/shop/listing",
   },
-   {
-    id: "speaker", 
+  {
+    id: "speaker",
     label: "Speakers",
     path: "/shop/listing",
   },
@@ -425,7 +425,7 @@ export const shoppingViewHeaderMenuItems = [
     label: "Accessories",
     path: "/shop/listing",
   },
- 
+
   {
     id: "about",
     label: "About",
@@ -440,7 +440,7 @@ export const categoryOptionsMap = {
   smartwatches: "Smartwatches",
   gaming: "Gaming",
   accessories: "Accessories",
-  speaker: "Speaker", 
+  speaker: "Speaker",
   other: "Other",
 };
 
@@ -452,9 +452,9 @@ export const brandOptionsMap = {
   lenovo: "Lenovo",
   tecno: "Tecno",
   redmi: "Redmi",
-  jbl: "JBL", 
-  zealot: "Zealot", 
-  "google-pixel": "Google Pixel", 
+  jbl: "JBL",
+  zealot: "Zealot",
+  "google-pixel": "Google Pixel",
   other: "Other",
 };
 
@@ -466,7 +466,7 @@ export const filterOptions = {
     { id: "smartwatches", label: "Smartwatches" },
     { id: "gaming", label: "Gaming" },
     { id: "accessories", label: "Accessories" },
-    { id: "speaker", label: "Speaker" }, 
+    { id: "speaker", label: "Speaker" },
   ],
   brand: [
     { id: "apple", label: "Apple" },
@@ -476,9 +476,9 @@ export const filterOptions = {
     { id: "lenovo", label: "Lenovo" },
     { id: "tecno", label: "Tecno" },
     { id: "redmi", label: "Redmi" },
-    { id: "jbl", label: "JBL" }, 
+    { id: "jbl", label: "JBL" },
     { id: "zealot", label: "Zealot" },
-    { id: "google-pixel", label: "Google Pixel" }, 
+    { id: "google-pixel", label: "Google Pixel" },
   ],
   condition: [
     { id: "Brand New", label: "Brand New" },
@@ -539,7 +539,7 @@ export const addressFormControls = [
     readOnly: true,
   },
   {
-    label: "Notes",
+    label: "Notes (Optional)",
     name: "notes",
     componentType: "textarea",
     placeholder: "Enter any additional notes",

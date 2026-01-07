@@ -78,49 +78,68 @@ const EmailVerificationPage = () => {
 
 
   return (
-    <div className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-2xl p-6 w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
-          Verify Your Email
-        </h2>
-        <p className="text-center text-gray-300 mb-4">
-          Enter the 6-digit code sent to your email address.
-        </p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="w-full bg-white/70 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50 overflow-hidden"
+    >
+      <div className="p-8 sm:p-12">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-peach-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Mail className="h-8 w-8 text-peach-500" />
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 tracking-tighter mb-2">
+            Verify Email
+          </h2>
+          <p className="text-gray-500 font-medium leading-relaxed">
+            Enter the 6-digit code sent to your inbox to activate your account.
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex justify-between">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="flex justify-between gap-2">
             {code.map((digit, index) => (
               <input
                 key={index}
                 ref={(el) => (inputRefs.current[index] = el)}
                 type="text"
-                maxLength="6"
+                maxLength="1"
                 value={digit}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-12 h-12 text-center text-2xl font-bold bg-gray-700 text-white border-2 border-gray-600 rounded-lg focus:border-green-500 focus:outline-none"
+                className="w-full h-14 sm:h-16 text-center text-2xl font-black bg-gray-50 text-gray-900 border-2 border-gray-100 rounded-xl focus:border-peach-500 focus:bg-white focus:outline-none transition-all shadow-sm"
               />
             ))}
           </div>
-          {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
+
+          {error && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-red-500 font-bold text-center text-sm bg-red-50 py-2 rounded-lg border border-red-100"
+            >
+              {error}
+            </motion.p>
+          )}
+
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={isLoading || code.some((digit) => !digit)}
-            className="w-full bg-gradient-to-r from-[#FF9A8B] to-[#FF6A88] text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:from-[#FF8264] hover:to-[#FF4E57] focus:outline-none focus:ring-2 focus:ring-[#FF6A88] focus:ring-opacity-50 disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-peach-500 to-peach-600 text-white font-black py-4 px-6 rounded-2xl shadow-xl shadow-peach-100 hover:shadow-peach-200 transition-all focus:outline-none focus:ring-4 focus:ring-peach-500 focus:ring-opacity-20 disabled:opacity-50 disabled:grayscale"
           >
-            {isLoading ? "Verifying..." : "Verify Email"}
+            {isLoading ? "Verifying..." : "Verify & Join"}
           </motion.button>
-
         </form>
-      </motion.div>
-    </div>
+
+        <p className="mt-8 text-center text-sm text-gray-500 font-medium">
+          Didn't receive the code?{" "}
+          <button className="text-peach-600 font-black hover:underline transition-all">Resend Code</button>
+        </p>
+      </div>
+    </motion.div>
   );
 };
 export default EmailVerificationPage;
