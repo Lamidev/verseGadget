@@ -203,7 +203,6 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.pending, (state) => {
         // Do not set isLoading to true for logout to prevent global freeze
-        // state.isLoading = true; 
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;

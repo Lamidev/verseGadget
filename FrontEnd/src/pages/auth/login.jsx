@@ -28,13 +28,13 @@ function AuthLogin() {
 
     try {
       const result = await dispatch(loginUser(formData)).unwrap();
-      
+
       if (result?.success) {
-        toast({ 
+        toast({
           title: "Login successful!",
           description: "Welcome back!"
         });
-        
+
         setFormData(initialState);
       } else {
         toast({
@@ -57,7 +57,7 @@ function AuthLogin() {
   useEffect(() => {
     if (isAuthenticated && user) {
       const fromCheckout = sessionStorage.getItem('fromCheckout');
-      
+
       if (fromCheckout) {
         sessionStorage.removeItem('fromCheckout');
         navigate("/shop/checkout");
@@ -74,8 +74,8 @@ function AuthLogin() {
       transition={{ duration: 0.5 }}
       className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden mx-auto"
     >
-      <div className="p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
+      <div className="p-6">
+        <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
           Welcome Back
         </h2>
 
@@ -94,17 +94,17 @@ function AuthLogin() {
           </p>
         )}
 
-        <div className="flex items-center justify-between mt-6">
-          <Link 
-            to="/auth/forgot-password" 
+        <div className="flex items-center justify-between mt-4">
+          <Link
+            to="/auth/forgot-password"
             className="text-sm text-white hover:underline transition-colors"
           >
             Forgot password?
           </Link>
           <p className="text-sm text-white">
             Don't have an account?{" "}
-            <Link 
-              to="/auth/register" 
+            <Link
+              to="/auth/register"
               className="text-white hover:underline font-medium transition-colors"
             >
               Register

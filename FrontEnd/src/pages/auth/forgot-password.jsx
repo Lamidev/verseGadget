@@ -46,8 +46,8 @@ function ForgotPasswordPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
+      <div className="p-6">
+        <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
           Forgot Password
         </h2>
 
@@ -68,7 +68,7 @@ function ForgotPasswordPage() {
           </div>
         )}
       </div>
-      <div className="px-8 py-4 bg-gray-900 bg-opacity-50 flex justify-center">
+      <div className="px-6 py-3 bg-gray-900 bg-opacity-50 flex justify-center">
         <Link to={"/auth/login"} className="text-white hover:underline flex items-center gap-2">
           <ArrowLeft size={18} /> Back to Login
         </Link>

@@ -19,7 +19,7 @@ function ShoppingProductTile({ product, handleGetProductDetails, handleAddToCart
         <img
           src={product?.image}
           alt={product?.title}
-          className="w-full h-48 sm:h-56 md:h-64 object-contain rounded-lg"
+          className="w-full h-64 sm:h-72 md:h-80 object-contain rounded-lg"
           onClick={() => handleGetProductDetails(product?._id)}
         />
 
@@ -47,11 +47,10 @@ function ShoppingProductTile({ product, handleGetProductDetails, handleAddToCart
             className="absolute top-2 right-2 flex flex-col space-y-1"
           >
             <Badge
-              className={`text-[9px] px-1.5 py-0.5 h-5 ${
-                product?.condition === "Brand New"
+              className={`text-[9px] px-1.5 py-0.5 h-5 ${product?.condition === "Brand New"
                   ? "bg-green-500 hover:bg-green-600"
                   : "bg-yellow-500 hover:bg-yellow-600"
-              }`}
+                }`}
             >
               {product?.condition}
             </Badge>

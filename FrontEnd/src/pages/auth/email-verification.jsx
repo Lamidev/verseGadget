@@ -48,17 +48,17 @@ const EmailVerificationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const verificationCode = code.join("");
-    
+
     try {
       await dispatch(verifyEmail({ code: verificationCode })).unwrap();
       toast({ description: "Email verified successfully, login to continue", variant: "success" });
-      
+
       // Clear any potential lingering authentication state
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    
+
       // Re-fetch auth state to ensure correct redirection
       await dispatch(checkAuth());
-    
+
       navigate("/auth/login"); // Ensure the correct redirection
     } catch (error) {
       toast({
@@ -67,7 +67,7 @@ const EmailVerificationPage = () => {
       });
     }
   };
-  
+
 
   // Auto submit when all fields are filled
   useEffect(() => {
@@ -75,7 +75,7 @@ const EmailVerificationPage = () => {
       handleSubmit(new Event("submit"));
     }
   }, [code, isLoading]); // Added isLoading to prevent firing while loading
-  
+
 
   return (
     <div className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
@@ -83,12 +83,12 @@ const EmailVerificationPage = () => {
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-md"
+        className="bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-2xl p-6 w-full max-w-md"
       >
-        <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
+        <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-white to-white text-transparent bg-clip-text">
           Verify Your Email
         </h2>
-        <p className="text-center text-gray-300 mb-6">
+        <p className="text-center text-gray-300 mb-4">
           Enter the 6-digit code sent to your email address.
         </p>
 
@@ -109,14 +109,14 @@ const EmailVerificationPage = () => {
           </div>
           {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
           <motion.button
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.95 }}
-  type="submit"
-  disabled={isLoading || code.some((digit) => !digit)}
-  className="w-full bg-gradient-to-r from-[#FF9A8B] to-[#FF6A88] text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:from-[#FF8264] hover:to-[#FF4E57] focus:outline-none focus:ring-2 focus:ring-[#FF6A88] focus:ring-opacity-50 disabled:opacity-50"
->
-  {isLoading ? "Verifying..." : "Verify Email"}
-</motion.button>
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            disabled={isLoading || code.some((digit) => !digit)}
+            className="w-full bg-gradient-to-r from-[#FF9A8B] to-[#FF6A88] text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:from-[#FF8264] hover:to-[#FF4E57] focus:outline-none focus:ring-2 focus:ring-[#FF6A88] focus:ring-opacity-50 disabled:opacity-50"
+          >
+            {isLoading ? "Verifying..." : "Verify Email"}
+          </motion.button>
 
         </form>
       </motion.div>

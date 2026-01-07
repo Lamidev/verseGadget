@@ -1,39 +1,27 @@
 const jwt = require("jsonwebtoken");
 
-// const generateTokenAndSetCookie = (res, userId) => {
- 
-//   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-//     expiresIn: "7d",
-    
-//   });
-
-
-//   res.cookie("token", token, {
-//     httpOnly: true,
-//     secure: true,
-//     //  process.env.NODE_ENV === "production",
-//     sameSite: "none",
-//     maxAge: 7 * 24 * 60 * 60 * 1000,
-//   });
-
-//   return token;
-// };
-// module.exports = { generateTokenAndSetCookie };
-
-
+/**
+ * Generates a JWT token and sets it as an HTTP-only cookie.
+ * 
+ * @param {Response} res - Express response object
+ * @param {string} userId - ID of the user to encode in the token
+ * @returns {string} The generated JWT token
+ */
 const generateTokenAndSetCookie = (res, userId) => {
+  // Token expires in 24 hours
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "24h",
   });
 
+  // Cookie settings for security
   res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true, // Prevents XSS attacks
+    secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Protects against CSRF
+    maxAge: 24 * 60 * 60 * 1000, // Matches token expiration (24 hours)
   });
 
   return token;
 };
 
-module.exports = {generateTokenAndSetCookie};
+module.exports = { generateTokenAndSetCookie };

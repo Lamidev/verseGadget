@@ -482,11 +482,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
       <DialogContent className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-5 max-w-[95vw] md:max-w-[85vw] xl:max-w-[70vw] 2xl:max-w-[60vw] h-[85vh] overflow-y-auto rounded-2xl shadow-lg">
         {/* LEFT SIDE */}
         <div className="flex flex-col gap-6">
-          <div className="relative overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center h-72 sm:h-80 md:h-[400px]">
+          <div className="relative overflow-hidden rounded-xl bg-transparent flex items-center justify-center h-80 sm:h-96 md:h-[500px]">
             <img
               src={productDetails?.image}
               alt={productDetails?.title}
-              className="object-contain w-full h-full p-4"
+              className="object-contain w-full h-full"
             />
           </div>
 
@@ -511,11 +511,10 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             <p className="text-sm text-gray-700">
               <span className="font-medium">Availability:</span>{" "}
               <span
-                className={`font-semibold ${
-                  productDetails?.totalStock > 0
+                className={`font-semibold ${productDetails?.totalStock > 0
                     ? "text-green-600"
                     : "text-red-600"
-                }`}
+                  }`}
               >
                 {productDetails?.totalStock > 0
                   ? `${productDetails.totalStock} in stock`
