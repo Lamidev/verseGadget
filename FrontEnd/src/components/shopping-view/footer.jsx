@@ -9,6 +9,7 @@ import {
   FaMapMarkerAlt,
   FaLinkedin,
   FaCode,
+  FaTiktok,
 } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -205,9 +206,9 @@ const Footer = () => {
               <h2 className="text-xl font-semibold mb-4 text-gray-800">Follow Us</h2>
               <div className="flex justify-center md:justify-start space-x-3">
                 {[
-                  { icon: FaFacebook, href: "https://facebook.com", color: "hover:text-blue-600" },
-                  { icon: FaTwitter, href: "https://twitter.com", color: "hover:text-blue-400" },
-                  { icon: FaInstagram, href: "https://instagram.com", color: "hover:text-pink-600" },
+                  { icon: FaFacebook, href: "https://www.facebook.com/share/1G9VmNL4hK/?mibextid=wwXIfr", color: "hover:text-blue-600" },
+                  { icon: FaInstagram, href: "https://www.instagram.com/gadgetsgridphone?igsh=MWd5dHJxNnNmcGV5aA%3D%3D&utm_source=qr", color: "hover:text-pink-600" },
+                  { icon: FaTiktok, href: "https://www.tiktok.com/@gadgetsgrid.africa?_r=1&_t=ZM-92sM0uxRvZ2", color: "hover:text-black" },
                   { icon: FaWhatsapp, href: "https://wa.me/2349025765871", color: "hover:text-green-600" },
                 ].map((social, index) => (
                   <motion.div

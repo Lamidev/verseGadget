@@ -19,14 +19,23 @@ const {
  */
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
+
   try {
     if (!userName || !email || !password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    const checkUser = await User.findOne({ email });
-    if (checkUser)
+    // Check for existing user by email
+    const checkUserEmail = await User.findOne({ email });
+    if (checkUserEmail) {
       return res.status(400).json({ success: false, message: "A user with this email already exists" });
+    }
+
+    // Check for existing user by userName
+    const checkUserName = await User.findOne({ userName });
+    if (checkUserName) {
+      return res.status(400).json({ success: false, message: "This username is already taken" });
+    }
 
     const hashPassword = await bcrypt.hash(password, 12);
     const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
@@ -40,18 +49,23 @@ const registerUser = async (req, res) => {
     });
 
     await newUser.save();
+
     generateTokenAndSetCookie(res, newUser._id);
 
     // Email sending - won't break registration if it fails
-    const emailSent = await sendVerificationEmail(newUser.email, verificationToken);
-    if (!emailSent) {
-      console.error("Verification email sending failed for:", newUser.email);
+    try {
+      const emailSent = await sendVerificationEmail(newUser.email, verificationToken);
+      if (!emailSent) {
+        console.error("Verification email sending failed for:", newUser.email);
+      }
+    } catch (emailErr) {
+      console.error("Email service error:", emailErr.message);
     }
 
     const user = newUser.toObject();
     user.id = user._id;
     delete user._id;
-    delete user.password; // Security: ensure password hash is never sent to frontend
+    delete user.password;
 
     res.status(201).json({
       success: true,
@@ -60,7 +74,15 @@ const registerUser = async (req, res) => {
     });
 
   } catch (e) {
-    console.error("Registration error:", e);
+    console.error("Registration error details:", e);
+    // Handle mongoose duplicate key error if it somehow escapes the manual checks
+    if (e.code === 11000) {
+      const field = Object.keys(e.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `This ${field === 'userName' ? 'username' : field} is already taken`
+      });
+    }
     res.status(500).json({ success: false, message: "Internal server error during registration" });
   }
 };
@@ -70,6 +92,7 @@ const registerUser = async (req, res) => {
  */
 const verifyEmail = async (req, res) => {
   const { code } = req.body;
+
   try {
     const user = await User.findOne({
       verificationToken: code,
@@ -165,10 +188,9 @@ const forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      // Security: Even if user not found, return success to prevent email enumeration
       return res.status(200).json({
         success: true,
-        message: "If an account exists with this email, a reset link has been sent"
+        message: "If an account exists with this email, a recovery link has been sent"
       });
     }
 
@@ -178,14 +200,13 @@ const forgotPassword = async (req, res) => {
     user.resetPasswordExpiresAt = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    await sendPasswordResetEmail(
-      user.email,
-      `${process.env.CLIENT_URL}/auth/reset-password/${resetToken}`
-    );
+    const resetURL = `${process.env.CLIENT_URL}/auth/reset-password/${resetToken}`;
+
+    const emailSent = await sendPasswordResetEmail(user.email, resetURL);
 
     res.status(200).json({
       success: true,
-      message: "If an account exists with this email, a reset link has been sent",
+      message: "If an account exists with this email, a recovery link has been sent",
     });
   } catch (error) {
     console.error("Forgot password error:", error);

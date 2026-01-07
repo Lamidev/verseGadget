@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { verifyEmail, checkAuth } from "../../store/auth-slice"; // Adjust the path if needed
-import { useToast } from "@/components/ui/use-toast"; // Adjust the path if needed
+import { verifyEmail, checkAuth } from "../../store/auth-slice";
+import { useToast } from "@/components/ui/use-toast";
+import { Mail } from "lucide-react";
 
 const EmailVerificationPage = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -46,35 +47,34 @@ const EmailVerificationPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+    if (isLoading) return; // Stop if already processing
+
     const verificationCode = code.join("");
+    if (verificationCode.length !== 6) return;
 
     try {
       await dispatch(verifyEmail({ code: verificationCode })).unwrap();
       toast({ description: "Email verified successfully, login to continue", variant: "success" });
 
-      // Clear any potential lingering authentication state
-      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-      // Re-fetch auth state to ensure correct redirection
+      // Re-fetch auth state
       await dispatch(checkAuth());
-
-      navigate("/auth/login"); // Ensure the correct redirection
+      navigate("/auth/login");
     } catch (error) {
       toast({
-        description: error.message || "Verification failed",
+        description: error || "Verification failed",
         variant: "destructive",
       });
     }
   };
 
-
   // Auto submit when all fields are filled
   useEffect(() => {
-    if (code.every((digit) => digit !== "") && !isLoading) {
-      handleSubmit(new Event("submit"));
+    const fullCode = code.join("");
+    if (fullCode.length === 6 && !isLoading) {
+      handleSubmit();
     }
-  }, [code, isLoading]); // Added isLoading to prevent firing while loading
+  }, [code]); // Watch the code array directly
 
 
   return (
