@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Separator } from "../ui/separator";
-import { Plus, Minus, Truck, ShieldCheck, RefreshCcw, Package, CreditCard, ChevronRight } from "lucide-react";
+import { Plus, Minus, Truck, ShieldCheck, RefreshCcw, Package, CreditCard, ChevronRight, Share2, MessageCircle } from "lucide-react";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { useToast } from "../ui/use-toast";
 import { setProductDetails } from "@/store/shop/products-slice";
@@ -73,6 +73,63 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     setQuantity(1);
   }
 
+  function handleWhatsAppOrder() {
+    const phoneNumber = "2349135924262";
+
+    // Construct the backend share URL which generates Open Graph meta tags for the image preview
+    // We assume the backend is deployed on the same domain or a known API domain.
+    // If running locally, this link won't generate a preview on real WhatsApp until deployed.
+    const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8050/api";
+    // Remove '/api' if it's already included or just construct carefully. 
+    // Usually VITE_API_URL includes /api. Let's check the store first.
+    // Ideally we want something like: https://api.gadgetsgrid.ng/api/share/PRODUCT_ID
+
+    // For now, I'll use a safer approach:
+    // If we are in production (window.location.hostname is not localhost), use the production API URL.
+    // Otherwise, use localhost (which won't work for WhatsApp preview but is correct for logic).
+
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const apiBase = isLocal ? "http://localhost:8050" : "https://gadgetgrid-3hz0.onrender.com"; // Fallback to the render URL I saw in backend index.js
+
+    const shareUrl = `${apiBase}/api/share/${productDetails?._id}`;
+
+    const message = `Hello, I would like to order this product:
+*${productDetails?.title}*
+Price: ₦${currentPrice?.toLocaleString("en-NG")}
+Qty: ${quantity}
+Image: ${productDetails?.image}
+Link: ${shareUrl}`;
+
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  }
+
+  async function handleShareProduct() {
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const apiBase = isLocal ? "http://localhost:8050" : "https://gadgetgrid-3hz0.onrender.com";
+    const shareUrl = `${apiBase}/api/share/${productDetails?._id}`;
+
+    const shareData = {
+      title: productDetails?.title,
+      text: `Check out ${productDetails?.title} on Gadgets Grid!`,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        toast({
+          title: "Link Copied!",
+          description: "Product link copied to clipboard.",
+        });
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  }
+
   useEffect(() => {
     if (productDetails) {
       setQuantity(1);
@@ -108,7 +165,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
 
           {/* Right Side: Product Info */}
           <div className="w-full lg:w-1/2 flex flex-col h-full bg-white relative">
-            <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6 lg:space-y-8 pb-32 lg:pb-8">
+            <div className="flex-1 overflow-y-auto p-5 lg:p-8 space-y-6 lg:space-y-8 pb-48 lg:pb-8">
               {/* Mobile Image */}
               <div className="block lg:hidden w-full aspect-square relative bg-gray-50 rounded-2xl mb-6 overflow-hidden">
                 <img
@@ -130,7 +187,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                   <ChevronRight size={10} />
                   <span>{productDetails?.brand}</span>
                 </div>
-                <h1 className="text-3xl font-black text-gray-900 leading-tight">
+                <h1 className="text-2xl sm:text-3xl font-black text-gray-900 leading-tight">
                   {productDetails?.title}
                 </h1>
               </div>
@@ -139,11 +196,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
               <div className="flex items-end justify-between">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
-                    <span className="text-4xl font-black text-peach-600">
+                    <span className="text-3xl sm:text-4xl font-black text-peach-600">
                       ₦{currentPrice?.toLocaleString("en-NG")}
                     </span>
                     {originalPrice && (
-                      <span className="text-xl font-bold text-gray-300 line-through decoration-peach-300">
+                      <span className="text-lg sm:text-xl font-bold text-gray-300 line-through decoration-peach-300">
                         ₦{originalPrice?.toLocaleString("en-NG")}
                       </span>
                     )}
@@ -194,62 +251,67 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                   </div>
                 </div>
               </div>
-
-              {/* Trust Badges */}
-              <div className="flex items-center justify-between py-4 border-y border-gray-100">
-                <div className="flex flex-col items-center gap-1.5">
-                  <Package className="h-5 w-5 text-orange-400" />
-                  <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Quality Check</span>
-                </div>
-                <div className="flex flex-col items-center gap-1.5">
-                  <RefreshCcw className="h-5 w-5 text-gray-400" />
-                  <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Easy Returns</span>
-                </div>
-                <div className="flex flex-col items-center gap-1.5">
-                  <CreditCard className="h-5 w-5 text-blue-400" />
-                  <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Secure Payment</span>
-                </div>
-              </div>
-
-              {/* Action Section */}
             </div>
 
             {/* Action Section - Fixed at Bottom */}
-            <div className="absolute lg:relative bottom-0 left-0 right-0 bg-white p-4 lg:p-0 border-t lg:border-none border-gray-100 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 z-10 w-full">
-              {/* Quantity Selector */}
-              <div className="flex items-center bg-gray-100 rounded-2xl p-1 w-full sm:w-auto">
+            <div className="absolute lg:relative bottom-0 left-0 right-0 bg-white p-3 lg:p-0 border-t lg:border-none border-gray-100 flex flex-col gap-2 z-10 w-full shadow-[0_-5px_20px_rgba(0,0,0,0.05)] lg:shadow-none bg-white/95 backdrop-blur-sm lg:bg-transparent">
+
+              <div className="flex gap-2 w-full">
+                {/* Quantity Selector */}
+                <div className="flex items-center bg-gray-100 rounded-xl p-1 shrink-0 h-10 sm:h-11">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleQuantityChange("decrement")}
+                    disabled={quantity <= 1 || productDetails?.totalStock === 0}
+                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg hover:bg-white hover:shadow-sm transition-all"
+                  >
+                    <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
+                  </Button>
+                  <span className="w-8 sm:w-10 text-center font-black text-sm sm:text-base">
+                    {quantity}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleQuantityChange("increment")}
+                    disabled={quantity >= productDetails?.totalStock || productDetails?.totalStock === 0}
+                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg hover:bg-white hover:shadow-sm transition-all"
+                  >
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                  </Button>
+                </div>
+
                 <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleQuantityChange("decrement")}
-                  disabled={quantity <= 1 || productDetails?.totalStock === 0}
-                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl hover:bg-white hover:shadow-sm transition-all"
+                  onClick={handleAddToCart}
+                  disabled={productDetails?.totalStock === 0}
+                  className="flex-1 h-10 sm:h-11 bg-peach-500 hover:bg-peach-600 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-peach-100 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
                 >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-12 text-center font-black text-lg">
-                  {quantity}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleQuantityChange("increment")}
-                  disabled={quantity >= productDetails?.totalStock || productDetails?.totalStock === 0}
-                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl hover:bg-white hover:shadow-sm transition-all"
-                >
-                  <Plus className="h-4 w-4" />
+                  {productDetails?.totalStock === 0
+                    ? "OUT OF STOCK"
+                    : `ADD • ₦${totalPrice.toLocaleString("en-NG")}`}
                 </Button>
               </div>
 
-              <Button
-                onClick={handleAddToCart}
-                disabled={productDetails?.totalStock === 0}
-                className="w-full h-12 sm:h-14 bg-peach-500 hover:bg-peach-600 text-white font-black text-base sm:text-lg rounded-2xl shadow-xl shadow-peach-100 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {productDetails?.totalStock === 0
-                  ? "OUT OF STOCK"
-                  : `ADD TO CART • ₦${totalPrice.toLocaleString("en-NG")}`}
-              </Button>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleWhatsAppOrder}
+                  className="h-10 sm:h-11 rounded-xl border-green-200 text-green-700 bg-green-50 hover:bg-green-100 hover:text-green-800 gap-1.5 font-bold text-xs sm:text-sm whitespace-nowrap px-1"
+                >
+                  <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                  <span className="truncate">WhatsApp Order</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleShareProduct}
+                  className="h-10 sm:h-11 rounded-xl border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 hover:text-blue-800 gap-1.5 font-bold text-xs sm:text-sm whitespace-nowrap px-1"
+                >
+                  <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                  <span className="truncate">Share Link</span>
+                </Button>
+              </div>
+
             </div>
           </div>
         </div>
