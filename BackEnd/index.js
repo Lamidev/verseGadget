@@ -16,6 +16,7 @@ const shopSearchRouter = require("./routes/shop/search-routes");
 const shopReviewRouter = require("./routes/shop/review-routes");
 const commonFeaturesRouter = require("./routes/common/features-routes");
 const commonNewsletterRouter = require("./routes/common/newsletter-routes");
+const shopShareRouter = require("./routes/shop/share-routes");
 
 const dbURL = process.env.MONGODB_URL;
 
@@ -65,6 +66,7 @@ mongoose
     app.use("/api/shop/review", shopReviewRouter);
     app.use("/api/common/features", commonFeaturesRouter);
     app.use("/api/common/newsletter", commonNewsletterRouter);
+    app.use("/api/share", shopShareRouter);
 
     // --- Lightweight Ping Route ---
     // Keeps server alive on Render or uptime monitors

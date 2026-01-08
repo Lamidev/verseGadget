@@ -151,7 +151,11 @@ function ShoppingListing() {
 
     // 1. Update URL Search Params
     const createQueryString = createSearchParamsHelper(filters, minPrice, maxPrice);
-    setSearchParams(new URLSearchParams(createQueryString));
+
+    // Preserve existing Params like product if any, though usually filter Apply resets view
+    // But let's build newSearchParams
+    const newSearchParams = new URLSearchParams(createQueryString);
+    setSearchParams(newSearchParams);
 
     // 2. Dispatch API Call
     dispatch(
@@ -173,6 +177,10 @@ function ShoppingListing() {
 
   function handleGetProductDetails(getCurrentProductId) {
     dispatch(fetchProductDetails(getCurrentProductId));
+    setSearchParams((prev) => {
+      prev.set("product", getCurrentProductId);
+      return prev;
+    });
   }
 
   async function handleAddToCart(getCurrentProductId, getTotalStock) {
@@ -242,6 +250,25 @@ function ShoppingListing() {
     setIsLoading(true);
     setCurrentPage(pageNumber);
   };
+
+  // Deep linking: Check for product ID in URL on mount/update
+  useEffect(() => {
+    const productId = searchParams.get("product");
+    if (productId && (!productDetails || productDetails._id !== productId)) {
+      dispatch(fetchProductDetails(productId));
+    }
+  }, [searchParams, dispatch, productDetails]);
+
+  // Handle Dialog State and URL Sync
+  function handleDialogChange(isOpen) {
+    setOpenDetailsDialog(isOpen);
+    if (!isOpen) {
+      setSearchParams((prev) => {
+        prev.delete("product");
+        return prev;
+      });
+    }
+  }
 
   useEffect(() => {
     dispatch(fetchCartItems());
@@ -486,7 +513,7 @@ function ShoppingListing() {
 
       <ProductDetailsDialog
         open={openDetailsDialog}
-        setOpen={setOpenDetailsDialog}
+        setOpen={handleDialogChange}
         productDetails={productDetails}
       />
     </motion.div>
