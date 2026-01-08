@@ -9,15 +9,19 @@ const getProductShareLink = async (req, res) => {
             return res.status(404).send("Product not found");
         }
 
-        // Determine the frontend URL (fallback to a hardcoded expected prod URL if env var missing)
-        // Assuming process.env.CLIENT_URL is set, otherwise default to "https://gadgetsgrid.ng"
-        const allowedOrigins = [
-            "https://gadgetsgrid.ng",
-            "https://www.gadgetsgrid.ng",
-            "https://gadgetgrid-3hz0.onrender.com",
-        ];
-        // Default to the main production domain if CLIENT_URL isn't explicitly one of the above or localhost
-        const frontendBaseUrl = process.env.CLIENT_URL || "https://gadgetsgrid.ng";
+        // Determine the frontend URL
+        // Priority: Environment Variable -> Render Public URL -> Fallback Hardcoded
+        let frontendBaseUrl = process.env.CLIENT_URL;
+
+        if (!frontendBaseUrl) {
+            // If CLIENT_URL is not set, try to use the Render URL or fallback
+            frontendBaseUrl = "https://gadgetgrid-3hz0.onrender.com";
+        }
+
+        // Ensure no trailing slash
+        if (frontendBaseUrl.endsWith('/')) {
+            frontendBaseUrl = frontendBaseUrl.slice(0, -1);
+        }
 
         // Construct the actual deep link
         const targetUrl = `${frontendBaseUrl}/shop/listing?product=${productId}`;
@@ -35,6 +39,9 @@ const getProductShareLink = async (req, res) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title} | Gadgets Grid</title>
+    
+    <!-- Redirect Fallback -->
+    <meta http-equiv="refresh" content="0;url=${targetUrl}">
     
     <!-- Open Graph Metadata -->
     <meta property="og:title" content="${title}">

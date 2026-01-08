@@ -77,19 +77,9 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     const phoneNumber = "2349135924262";
 
     // Construct the backend share URL which generates Open Graph meta tags for the image preview
-    // We assume the backend is deployed on the same domain or a known API domain.
-    // If running locally, this link won't generate a preview on real WhatsApp until deployed.
-    const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8050/api";
-    // Remove '/api' if it's already included or just construct carefully. 
-    // Usually VITE_API_URL includes /api. Let's check the store first.
-    // Ideally we want something like: https://api.gadgetsgrid.ng/api/share/PRODUCT_ID
-
-    // For now, I'll use a safer approach:
-    // If we are in production (window.location.hostname is not localhost), use the production API URL.
-    // Otherwise, use localhost (which won't work for WhatsApp preview but is correct for logic).
-
     const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    const apiBase = isLocal ? "http://localhost:8050" : "https://gadgetgrid-3hz0.onrender.com"; // Fallback to the render URL I saw in backend index.js
+    // Using the user-provided Render production URL for API base
+    const apiBase = isLocal ? "http://localhost:8050" : "https://api.gadgetsgrid.ng";
 
     const shareUrl = `${apiBase}/api/share/${productDetails?._id}`;
 
@@ -97,7 +87,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
 *${productDetails?.title}*
 Price: ₦${currentPrice?.toLocaleString("en-NG")}
 Qty: ${quantity}
-Image: ${productDetails?.image}
 Link: ${shareUrl}`;
 
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
@@ -106,7 +95,7 @@ Link: ${shareUrl}`;
 
   async function handleShareProduct() {
     const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    const apiBase = isLocal ? "http://localhost:8050" : "https://gadgetgrid-3hz0.onrender.com";
+    const apiBase = isLocal ? "http://localhost:8050" : "https://api.gadgetsgrid.ng";
     const shareUrl = `${apiBase}/api/share/${productDetails?._id}`;
 
     const shareData = {
@@ -138,8 +127,8 @@ Link: ${shareUrl}`;
 
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogContent className="p-0 max-w-[95vw] md:max-w-[85vw] lg:max-w-[1000px] max-h-[90vh] overflow-hidden rounded-3xl border-none shadow-2xl bg-white">
-        <div className="flex flex-col lg:flex-row h-full max-h-[90vh]">
+      <DialogContent className="p-0 max-w-[95vw] md:max-w-[85vw] lg:max-w-[1000px] max-h-[90dvh] overflow-hidden rounded-3xl border-none shadow-2xl bg-white">
+        <div className="flex flex-col lg:flex-row h-full max-h-[90dvh]">
           {/* Left Side: Image Gallery Style */}
           <div className="hidden lg:block lg:w-1/2 bg-gray-50/50 p-6 flex items-center justify-center relative group">
             <motion.div
@@ -193,7 +182,7 @@ Link: ${shareUrl}`;
               </div>
 
               {/* Pricing & Stock */}
-              <div className="flex items-end justify-between">
+              <div className="flex items-end justify-between flex-wrap gap-2">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
                     <span className="text-3xl sm:text-4xl font-black text-peach-600">
