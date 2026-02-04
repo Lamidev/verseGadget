@@ -30,14 +30,20 @@ import LoadingSpinner from "./components/shopping-view/loading-spinner";
 import AuthListener from "@/components/shopping-view/authListener";
 import ScrollToTop from "./components/common/scroll-to-top";
 
+import QuotaSentinel from "./components/common/quota-sentinel";
+
 function App() {
   const { user, isAuthenticated, isLoading, isCheckingAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  // PLANNED RESOURCE MANAGEMENT: Set to 'QUOTA_EXCEEDED' to trigger infrastructure lock
+  const systemStatus = "QUOTA_EXCEEDED"; 
 
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
 
+  if (systemStatus === "QUOTA_EXCEEDED") return <QuotaSentinel />;
   if (isCheckingAuth) return <LoadingSpinner />;
 
   return (
